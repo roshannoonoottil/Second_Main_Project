@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './Login.css';
 import google_icon from '/icons8-google-48.png';
 import { useNavigate } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -9,6 +10,8 @@ const Login: React.FC = () => {
   // Form field state variables
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  // State to toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   // Error message state variables
   const [emailError, setEmailError] = useState('');
@@ -70,6 +73,11 @@ const Login: React.FC = () => {
     // Replace the following with your login logic
   };
 
+  // Toggle password visibility state
+  const togglePasswordVisibility = (): void => {
+    setShowPassword((prevState) => !prevState);
+  };
+
   return (
     <div className="login-container">
       <h1>User Login</h1>
@@ -89,21 +97,39 @@ const Login: React.FC = () => {
           {emailError && <span className="error">{emailError}</span>}
         </div>
         <div className="form-group">
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => {
-              const val = e.currentTarget.value;
-              setPassword(val);
-              validatePassword(val);
-            }}
-            required
-          />
+          {/* Wrap the password input and eye icon in a relative container */}
+          <div style={{ position: 'relative' }}>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => {
+                const val = e.currentTarget.value;
+                setPassword(val);
+                validatePassword(val);
+              }}
+              required
+              style={{ paddingRight: '40px' }} // extra space for the icon
+            />
+            <span
+              onClick={togglePasswordVisibility}
+              style={{
+                position: 'absolute',
+                right: '10px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                cursor: 'pointer',
+              }}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
           {passwordError && <span className="error">{passwordError}</span>}
         </div>
         {submitError && <div className="error submit-error">{submitError}</div>}
-        <button type="submit" className="login-button">Login</button>
+        <button type="submit" className="login-button">
+          Login
+        </button>
       </form>
 
       <button onClick={handleGoogleLogin} className="google-login-button">
