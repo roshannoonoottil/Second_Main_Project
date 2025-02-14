@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 const SignUp = lazy(() => import('./Components/User/SignUp/SignUp'));
 const Login = lazy(() => import('./Components/User/Login/Login'));
 const AdminLogin = lazy(() => import('./Components/Admin/Login/Adminlogin'));
+const TestComponent = lazy(()=>import('./Components/TestComponent'))
 
 function App() {
   const [shadowStyle, setShadowStyle] = useState({
@@ -78,6 +79,7 @@ function App() {
               <Route path='/' element={<Login />} />
               <Route path='/signup' element={<SignUp />} />
               <Route path='/admin' element={<AdminLogin />} />
+              <Route path='/test' element={<TestComponent/>}/>
             </Routes>
           </Suspense>
         </Router>
