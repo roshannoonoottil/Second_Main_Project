@@ -1,0 +1,12 @@
+# Node.js dependencies
+/node_modules/
+
+# Logs
+npm-debug.log*
+
+# dotenv environment variables file
+.env
+
+# OS-specific files
+.DS_Store        # macOS
+Thumbs.db        # Windows

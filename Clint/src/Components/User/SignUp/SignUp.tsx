@@ -3,6 +3,8 @@ import './SignUp.css';
 import google_icon from '/icons8-google-48.png';
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { ToastContainer, toast } from 'react-toastify';
+import axios, { AxiosError } from 'axios';
 
 function SignUp() {
   const navigate = useNavigate();
@@ -10,6 +12,7 @@ function SignUp() {
   // Form field states
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -20,6 +23,7 @@ function SignUp() {
   // Error message states
   const [fullNameError, setFullNameError] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [mobileError, setMobileError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [submitError, setSubmitError] = useState('');
@@ -32,13 +36,12 @@ function SignUp() {
     navigate('/');
   };
 
-  // Validation functions for each field:
+  // Validation functions:
   const validateFullName = () => {
     if (fullName.trim() === '') {
       setFullNameError('Full Name is required');
       return false;
     }
-    // Optionally, require the full name to contain at least two words.
     const nameRegex = /^[A-Za-z]+( [A-Za-z]+)+$/;
     if (!nameRegex.test(fullName.trim())) {
       setFullNameError('Please enter your full name');
@@ -62,26 +65,35 @@ function SignUp() {
     return true;
   };
 
-  const validatePassword = (): boolean => {
+  const validateMobile = () => {
+    if (mobile.trim() === '') {
+      setMobileError('Mobile number is required');
+      return false;
+    }
+    const mobileRegex = /^[6-9]\d{9}$/; // Ensures a valid 10-digit number starting with 6-9
+    if (!mobileRegex.test(mobile.trim())) {
+      setMobileError('Enter a valid 10-digit mobile number');
+      return false;
+    }
+    setMobileError('');
+    return true;
+  };
+
+  const validatePassword = () => {
     if (password.trim() === '') {
       setPasswordError('Password is required');
       return false;
     }
-    // Regex to enforce strong password criteria:
-    // - Minimum 8 characters
-    // - At least one uppercase letter, one lowercase letter, one number, and one special character
     const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
     if (!strongPasswordRegex.test(password)) {
-      setPasswordError(
-        'Password must be 8+ chars with upper, lower, number & special char'
-      );
+      setPasswordError('Password must be 8+ chars with upper, lower, number & special char');
       return false;
     }
     setPasswordError('');
     return true;
   };
-  
-  const validateConfirmPassword = (): boolean => {
+
+  const validateConfirmPassword = () => {
     if (confirmPassword.trim() === '') {
       setConfirmPasswordError('Confirm Password is required');
       return false;
@@ -93,105 +105,95 @@ function SignUp() {
     setConfirmPasswordError('');
     return true;
   };
-  
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Validate each field
     const isFullNameValid = validateFullName();
     const isEmailValid = validateEmail();
+    const isMobileValid = validateMobile();
     const isPasswordValid = validatePassword();
     const isConfirmPasswordValid = validateConfirmPassword();
 
-    // If any field fails validation, set a submit error message
-    if (!isFullNameValid || !isEmailValid || !isPasswordValid || !isConfirmPasswordValid) {
+    if (!isFullNameValid || !isEmailValid || !isMobileValid || !isPasswordValid || !isConfirmPasswordValid) {
       setSubmitError('Please fix the errors above');
-      // Remove the submit error after 3 seconds (optional)
       setTimeout(() => setSubmitError(''), 3000);
       return;
     }
 
-    // All validations passed – proceed with the registration logic
-    console.log('Form submitted successfully', { fullName, email, password });
-    // Reset form fields or navigate to another page as needed
+    console.log('Form submitted successfully', { fullName, email, mobile, password });
+
+    const formData = new FormData();
+    formData.append('fullname', fullName);
+    formData.append('email', email);
+    formData.append('mobile', mobile);
+    formData.append('password', password);
+
+    
+    try{
+      const response = await axios.post('http://localhost:3000/user/signup', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      if(response.status === 200){
+        toast.success("Registration successful!");
+        navigate('/')
+      }else{
+        toast.error(response.data.message);
+        
+      }
+    }catch (err: unknown) {
+      // Type assertion to AxiosError
+      const error = err as AxiosError;
+    
+      if (error.response) {
+        toast.error('Error uploading file: ' + (error.response.data as string)); // Ensure correct type
+      } else if (error.request) {
+        toast.error('No response from server. Please try again later.');
+      } else {
+        toast.error('An unexpected error occurred.');
+      }
+    
+      console.error('Upload Error:', error);
+    }
+    
   };
 
   return (
     <div className="signup-container">
       <h1>Sign Up</h1>
       <form onSubmit={handleSubmit}>
-        {/* Full Name Field */}
+        {/* Full Name */}
         <div className="form-group">
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            onBlur={validateFullName}
-          />
+          <input type="text" placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} onBlur={validateFullName} />
           {fullNameError && <span className="error">{fullNameError}</span>}
         </div>
-        {/* Email Field */}
+        {/* Email */}
         <div className="form-group">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onBlur={validateEmail}
-          />
+          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} onBlur={validateEmail} />
           {emailError && <span className="error">{emailError}</span>}
         </div>
-        {/* Password Field with Eye Toggle */}
+        {/* Mobile Number */}
+        <div className="form-group">
+          <input type="tel" placeholder="Mobile Number" value={mobile} onChange={(e) => setMobile(e.target.value)} onBlur={validateMobile} />
+          {mobileError && <span className="error">{mobileError}</span>}
+        </div>
+        {/* Password */}
         <div className="form-group">
           <div style={{ position: 'relative' }}>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onBlur={validatePassword}
-              style={{ paddingRight: '40px' }}
-              required
-            />
-            <span
-              onClick={() => setShowPassword((prev) => !prev)}
-              style={{
-                position: 'absolute',
-                right: '10px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                cursor: 'pointer'
-              }}
-            >
+            <input type={showPassword ? 'text' : 'password'} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onBlur={validatePassword} style={{ paddingRight: '40px' }} required />
+            <span onClick={() => setShowPassword((prev) => !prev)} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }}>
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
           {passwordError && <span className="error">{passwordError}</span>}
         </div>
-        {/* Confirm Password Field with Eye Toggle */}
+        {/* Confirm Password */}
         <div className="form-group">
           <div style={{ position: 'relative' }}>
-            <input
-              type={showConfirmPassword ? 'text' : 'password'}
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              onBlur={validateConfirmPassword}
-              style={{ paddingRight: '40px' }}
-              required
-            />
-            <span
-              onClick={() => setShowConfirmPassword((prev) => !prev)}
-              style={{
-                position: 'absolute',
-                right: '10px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                cursor: 'pointer'
-              }}
-            >
+            <input type={showConfirmPassword ? 'text' : 'password'} placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} onBlur={validateConfirmPassword} style={{ paddingRight: '40px' }} required />
+            <span onClick={() => setShowConfirmPassword((prev) => !prev)} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }}>
               {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
@@ -204,9 +206,19 @@ function SignUp() {
         <img src={google_icon} alt="Google" />
         Sign up with Google
       </button>
-      <p>
-        Already have an account? <a href="#" onClick={login}>Login</a>
-      </p>
+      <p>Already have an account? <a href="#" onClick={login}>Login</a></p>
+
+      <ToastContainer
+position="top-right"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+/>
     </div>
   );
 }
