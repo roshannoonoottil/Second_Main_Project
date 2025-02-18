@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
+import { connectDB } from "./server/model/userModel.js";
 import logger from 'morgan';
 import cors from 'cors'
 
@@ -8,6 +9,8 @@ import adminRouter from './routes/adminRoute.js';
 import userRouter from './routes/userRoute.js';
 
 const app = express();
+
+connectDB();
 
 // CORS configuration
 const corsOptions = {

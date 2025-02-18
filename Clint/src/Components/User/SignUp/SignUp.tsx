@@ -124,7 +124,7 @@ function SignUp() {
     console.log('Form submitted successfully', { fullName, email, mobile, password });
 
     const formData = new FormData();
-    formData.append('fullname', fullName);
+    formData.append('fullName', fullName);
     formData.append('email', email);
     formData.append('mobile', mobile);
     formData.append('password', password);

@@ -1,10 +1,12 @@
 import { connect, Schema, model } from "mongoose";
-// import 'dotenv/config';
+import 'dotenv/config';
+
 
 // ✅ Function to establish DB connection
 export const connectDB = async () => {
   try {
     await connect(process.env.MONGO_URL);
+    
     console.log("✅ Connected to MongoDB successfully!");
   } catch (error) {
     console.error("❌ Error connecting to MongoDB:", error);
@@ -13,7 +15,7 @@ export const connectDB = async () => {
 };
 
 const userSchema = new Schema({
-  userName: {
+  fullName: {
     type: String,
     required: true,
     trim: true,
