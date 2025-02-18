@@ -133,7 +133,7 @@ function SignUp() {
     try{
       const response = await axios.post('http://localhost:3000/user/signup', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'application/json'
         }
       });
       if(response.status === 200){
