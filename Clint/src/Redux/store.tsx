@@ -16,6 +16,13 @@ const persistedReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({
     reducer: persistedReducer,
     devTools: process.env.NODE_ENV !== 'production',
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'], // ✅ Ignore Redux Persist actions
+                ignoredPaths: ['register'], // ✅ Ignore 'register' if it's causing issues
+            },
+        }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
