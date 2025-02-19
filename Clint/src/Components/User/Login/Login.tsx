@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   // Form field state variables
   const [email, setEmail] = useState('');
@@ -19,6 +21,13 @@ const Login: React.FC = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [submitError, setSubmitError] = useState('');
+
+  axios.defaults.withCredentials = true;
+
+  const token = localStorage.getItem('token');
+  if (token) {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }
 
   const handleGoogleLogin = (): void => {
     console.log('Google login clicked'); // Replace with actual Google login logic
@@ -56,7 +65,7 @@ const Login: React.FC = () => {
   };
 
   // Form submission handler
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Validate fields using current state values
@@ -72,7 +81,26 @@ const Login: React.FC = () => {
 
     // If all validations pass, proceed with login logic
     console.log('Form submitted', { email, password });
-    // Replace the following with your login logic
+    
+    try {
+      const response = await axios.post('http://localhost:3000/user/login', { email, password });
+      if (response.data.success) {
+        localStorage.setItem('token', response.data.token);
+        console.log(response.data.data,'------------------------------------login resoponse data')
+        dispatch({
+          type: 'LOGIN',
+          payload: response.data.data
+        });
+        navigate('/home');
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error('Error logging in. Please try again.');
+      console.error('Error logging in:', error);
+    }
+
+
   };
 
   // Toggle password visibility state
@@ -141,6 +169,17 @@ const Login: React.FC = () => {
       <p>
         Don't have an account? <a href="#" onClick={register}>Sign up</a>
       </p>
+      <ToastContainer
+      position="top-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      />
     </div>
   );
 };
