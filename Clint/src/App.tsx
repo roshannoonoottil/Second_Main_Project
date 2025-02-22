@@ -6,6 +6,8 @@ const Login = lazy(() => import('./Components/User/Login/Login'));
 const AdminLogin = lazy(() => import('./Components/Admin/Login/Adminlogin'));
 const TestComponent = lazy(()=>import('./Components/TestComponent'))
 const Home = lazy(() => import('./Components/User/Home/Body/Body'));
+const Dashboard = lazy(() => import('./Components/Admin/Dashboard/Dashboard'));
+
 
 function App() {
   const [shadowStyle, setShadowStyle] = useState({
@@ -82,6 +84,7 @@ function App() {
               <Route path='/admin' element={<AdminLogin />} />
               <Route path='/test' element={<TestComponent/>}/>
               <Route path='/home' element={<Home/>}/>
+              <Route path='/dashboard' element={<Dashboard/>}/>
             </Routes>
           </Suspense>
         </Router>

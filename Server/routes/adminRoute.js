@@ -1,9 +1,7 @@
 import express from 'express';
 const router = express.Router();
+import adminController from '../server/controller/adminController.js';
 
-/* GET home page. */
-router.get('/', (req, res, next) => {
-  res.render('index', { title: 'Express' });
-});
+router.post('/login', adminController.login)
 
 export default router;
