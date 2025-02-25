@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import './Login.css';
-import google_icon from '/icons8-google-48.png';
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
+import GoogleAuth from '../GoogleAuth/GoogleAuth';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -28,10 +28,6 @@ const Login: React.FC = () => {
   if (token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
-
-  const handleGoogleLogin = (): void => {
-    console.log('Google login clicked'); // Replace with actual Google login logic
-  };
 
   const register = (): void => {
     navigate('/signup');
@@ -162,10 +158,7 @@ const Login: React.FC = () => {
         </button>
       </form>
 
-      <button onClick={handleGoogleLogin} className="google-login-button">
-        <img src={google_icon} alt="Google" />
-        Google Login
-      </button>
+     <GoogleAuth/>
       <p>
         Don't have an account? <a href="#" onClick={register}>Sign up</a>
       </p>

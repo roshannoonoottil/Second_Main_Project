@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import './SignUp.css';
-import google_icon from '/icons8-google-48.png';
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import axios, { AxiosError } from 'axios';
+import GoogleAuth from '../GoogleAuth/GoogleAuth';
 
 function SignUp() {
   const navigate = useNavigate();
@@ -27,10 +27,6 @@ function SignUp() {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [submitError, setSubmitError] = useState('');
-
-  const handleGoogleRegister = () => {
-    console.log('Google register clicked'); // Replace with actual Google sign-up logic
-  };
 
   const login = () => {
     navigate('/');
@@ -202,10 +198,7 @@ function SignUp() {
         {submitError && <div className="error submit-error">{submitError}</div>}
         <button type="submit" className="signup-button">Register</button>
       </form>
-      <button onClick={handleGoogleRegister} className="google-signup-button">
-        <img src={google_icon} alt="Google" />
-        Sign up with Google
-      </button>
+      <GoogleAuth/>
       <p>Already have an account? <a href="#" onClick={login}>Login</a></p>
 
       <ToastContainer
