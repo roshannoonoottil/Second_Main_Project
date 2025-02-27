@@ -1,51 +1,42 @@
-import React from 'react';
-import google_icon from '/icons8-google-48.png';
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { login } from "../../../Redux/authSlice";
 
-function GoogleAuth() {
-  const handleGoogleRegister = () => {
-    console.log('Google register clicked'); // Replace with actual Google sign-up logic
-  };
+const GoogleAuth = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const styles = {
-    button: {
-      width: '100%',
-      padding: '10px',
-      margin: '10px 0',
-      border: 'none',
-      borderRadius: '4px',
-      fontSize: '14px',
-      fontWeight: 'bold',
-      cursor: 'pointer',
-      background: '#333',
-      color: '#e0e0e0',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '8px',
-      transition: 'background 0.3s ease',
-    } as React.CSSProperties, // Ensures TypeScript recognizes the styles
-    buttonHover: {
-      background: '#444',
-    } as React.CSSProperties,
-    icon: {
-      width: '18px',
-      height: '18px',
-    } as React.CSSProperties,
+  const handleSuccess = async (response: any) => {
+    try {
+      const googleToken = response.credential; // Google ID Token
+      const userData: any = jwtDecode(googleToken);
+      console.log("Decoded Google User:", userData);
+
+      // Send the token to your backend for verification
+      const res = await axios.post("http://localhost:3000/user/google-auth", { token: googleToken });
+
+      if (res.data.success) {
+        localStorage.setItem("token", res.data.token);
+        dispatch(login(res.data.data));
+        navigate('/home');
+      } else {
+        console.error("Google login failed:", res.data.message);
+      }
+    } catch (error) {
+      console.error("Error in Google login:", error);
+    }
   };
 
   return (
-    <div>
-      <button
-        onClick={handleGoogleRegister}
-        style={styles.button}
-        onMouseEnter={(e) => (e.currentTarget.style.background = styles.buttonHover.background as string)}
-        onMouseLeave={(e) => (e.currentTarget.style.background = styles.button.background as string)}
-      >
-        <img src={google_icon} alt="Google" style={styles.icon} />
-        Continue with Google
-      </button>
-    </div>
+    <GoogleOAuthProvider clientId="1026085041917-ht0v41fvq22cdp6j2c9jjfn2pjq2ejts.apps.googleusercontent.com">
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "15px" }}>
+        <GoogleLogin onSuccess={handleSuccess} onError={() => console.log("Google Auth Failed")} />
+      </div>
+    </GoogleOAuthProvider>
   );
-}
+};
 
 export default GoogleAuth;

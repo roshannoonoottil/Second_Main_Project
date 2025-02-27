@@ -2,6 +2,8 @@ import userModel from "../model/userModel.js";
 import bcrypt from 'bcrypt'
 import 'dotenv/config';
 import jwt from 'jsonwebtoken';
+import { OAuth2Client } from "google-auth-library";
+
 
 
 const signup =  async (req, res) => {
@@ -76,4 +78,69 @@ const login = async (req, res) => {
 };
 
 
-export default {signup, login}
+
+
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+const googleLogin = async (req, res) => {
+    try {
+        console.log("Google Login Controller");
+
+        const { token } = req.body;
+        if (!token) {
+            return res.status(400).json({ success: false, message: "Google token is required" });
+        }
+
+        // Verify Google token
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+        if (!payload) {
+            return res.status(400).json({ success: false, message: "Invalid Google token" });
+        }
+
+        console.log("Google Payload:", payload);
+
+        // Check if user exists in DB
+        let user = await userModel.findOne({ email: payload.email });
+
+        if (!user) {
+            // If user doesn't exist, create a new one
+            user = new userModel({
+                fullName: payload.name,  // Store full name from Google
+                email: payload.email,
+                profilePicture: payload.picture, // Save profile image
+                isAdmin: false,  // Default to false unless specified
+                googleId: payload.sub, // Store Google user ID
+            });
+            await user.save();
+        }
+
+        // Prepare user details
+        const userDetails = {
+            userId: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            profilePicture: user.profilePicture,
+            isAdmin: user.isAdmin,
+            createdAt: user.createdAt,
+        };
+
+        // Generate JWT token for session
+        const appToken = jwt.sign(userDetails, process.env.USER_JWT_SECRET, { expiresIn: "7d" });
+
+        res.json({ success: true, token: appToken, data: userDetails });
+        console.log("Google Sign-In successful:", userDetails);
+        
+    } catch (error) {
+        console.error("Google login error:", error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+    
+export default {signup, login, googleLogin}

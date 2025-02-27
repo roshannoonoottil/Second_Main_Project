@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import GoogleAuth from '../GoogleAuth/GoogleAuth';
+import { login } from '../../../Redux/authSlice';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -83,10 +84,7 @@ const Login: React.FC = () => {
       if (response.data.success) {
         localStorage.setItem('token', response.data.token);
         console.log(response.data.data,'------------------------------------login resoponse data')
-        dispatch({
-          type: 'LOGIN',
-          payload: response.data.data
-        });
+        dispatch(login(response.data.data));
         navigate('/home');
       } else {
         toast.error(response.data.message);
@@ -157,8 +155,9 @@ const Login: React.FC = () => {
           Login
         </button>
       </form>
-
-     <GoogleAuth/>
+      <div>
+        <GoogleAuth />
+      </div>
       <p>
         Don't have an account? <a href="#" onClick={register}>Sign up</a>
       </p>
