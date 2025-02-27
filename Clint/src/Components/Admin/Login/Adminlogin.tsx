@@ -5,6 +5,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
+import { login } from '../../../Redux/authSlice';
 
 const AdminLogin: React.FC = () => {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ const AdminLogin: React.FC = () => {
       const response = await axios.post('http://localhost:3000/admin/login', { email, password });
       if (response.data.success) {
         localStorage.setItem('adminToken', response.data.token);
-        dispatch({ type: 'ADMIN_LOGIN', payload: response.data.data });
+        dispatch(login(response.data.data));
         navigate('/dashboard');
       } else {
         toast.error(response.data.message);
