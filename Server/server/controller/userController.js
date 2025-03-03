@@ -61,6 +61,7 @@ const login = async (req, res) => {
             fullName: userData.fullName,  // Changed from `name` to `fullName` to match signup
             email: userData.email,
             mobile: userData.mobile,
+            isProfileComplete: userData.isProfileComplete, 
             isAdmin: userData.isAdmin,   // Ensure isAdmin is included
             createdAt: userData.createdAt,
         };
@@ -128,6 +129,7 @@ const googleLogin = async (req, res) => {
             fullName: user.fullName,
             email: user.email,
             profilePicture: user.profilePicture,
+            isProfileComplete: user.isProfileComplete, 
             isAdmin: user.isAdmin,
             createdAt: user.createdAt,
         };

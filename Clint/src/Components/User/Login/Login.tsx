@@ -76,7 +76,14 @@ const Login: React.FC = () => {
       if (response.data.success) {
         localStorage.setItem("token", response.data.token);
         dispatch(login(response.data.data)); 
-        navigate("/home");
+        const user = response.data.data;
+        console.log('isProfile--- :',response.data);
+  
+        if (!user.isProfileComplete) {
+          navigate('/complete-profile'); // ✅ Redirect to profile completion
+        } else {
+          navigate('/home'); // ✅ Redirect to home if already complete
+        }
       } else {
         toast.error(response.data.message || "Login failed");
       }

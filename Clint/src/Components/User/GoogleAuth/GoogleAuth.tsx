@@ -24,10 +24,9 @@ const GoogleAuth = () => {
 
         const user = res.data.data;
         console.log('isProfile--- :',res.data);
-        
-
+  
         if (!user.isProfileComplete) {
-          navigate('/home'); // ✅ Redirect to profile completion
+          navigate('/complete-profile'); // ✅ Redirect to profile completion
         } else {
           navigate('/home'); // ✅ Redirect to home if already complete
         }
