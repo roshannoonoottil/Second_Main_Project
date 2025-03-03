@@ -7,6 +7,7 @@ const AdminLogin = lazy(() => import('./Components/Admin/Login/Adminlogin'));
 const TestComponent = lazy(()=>import('./Components/TestComponent'))
 const Home = lazy(() => import('./Components/User/Home/Body/Body'));
 const Dashboard = lazy(() => import('./Components/Admin/Dashboard/Dashboard'));
+const CompleteProfile = lazy(() => import('./Components/User/CompletProfile/CompleteProfile'));
 
 
 function App() {
@@ -81,9 +82,10 @@ function App() {
             <Routes>
               <Route path='/' element={<Login />} />
               <Route path='/signup' element={<SignUp />} />
+              <Route path='/home' element={<Home/>}/>
+              <Route path='/complete-profile' element={<CompleteProfile/>}/>
               <Route path='/admin' element={<AdminLogin />} />
               <Route path='/test' element={<TestComponent/>}/>
-              <Route path='/home' element={<Home/>}/>
               <Route path='/dashboard' element={<Dashboard/>}/>
             </Routes>
           </Suspense>

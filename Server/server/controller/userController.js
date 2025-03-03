@@ -25,6 +25,7 @@ const signup =  async (req, res) => {
             mobile,
             email,
             password: hashPass,
+            isProfileComplete: false,
             isAdmin: 'false'
         });
         console.log('User Details :',userData);
@@ -114,6 +115,7 @@ const googleLogin = async (req, res) => {
                 fullName: payload.name,  // Store full name from Google
                 email: payload.email,
                 profilePicture: payload.picture, // Save profile image
+                isProfileComplete: false, 
                 isAdmin: false,  // Default to false unless specified
                 googleId: payload.sub, // Store Google user ID
             });

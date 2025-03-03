@@ -1,105 +1,89 @@
-import React, { useState } from 'react';
-import './Login.css';
-import { useNavigate } from 'react-router-dom';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { ToastContainer, toast } from 'react-toastify';
-import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import GoogleAuth from '../GoogleAuth/GoogleAuth';
-import { login } from '../../../Redux/authSlice';
+import React, { useState, useEffect } from "react";
+import "./Login.css";
+import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import GoogleAuth from "../GoogleAuth/GoogleAuth";
+import { login } from "../../../Redux/authSlice";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  // Form field state variables
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  // State to toggle password visibility
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-  // Error message state variables
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [submitError, setSubmitError] = useState('');
+  // 🔹 Redirect if user is already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/home"); 
+    }
+  }, [navigate]);
 
-  axios.defaults.withCredentials = true;
-
-  const token = localStorage.getItem('token');
-  if (token) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  }
+  // 🔹 Set Axios Authorization Header
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
+  }, []);
 
   const register = (): void => {
-    navigate('/signup');
+    navigate("/signup");
   };
 
-  // Validate Email Field
   const validateEmail = (value: string = email): boolean => {
-    if (value.trim() === '') {
-      setEmailError('Email is required');
+    if (value.trim() === "") {
+      setEmailError("Email is required");
       return false;
     }
-    // Basic email regex: adjust as needed for your validation requirements
     const emailRegex = /^[A-Za-z\._\-\d]+@[A-Za-z]+\.[a-z]{2,}$/;
     if (!emailRegex.test(value.trim())) {
-      setEmailError('Invalid email format');
+      setEmailError("Invalid email format");
       return false;
     }
-    setEmailError('');
+    setEmailError("");
     return true;
   };
 
-  // Validate Password Field
   const validatePassword = (value: string = password): boolean => {
-    if (value.trim() === '') {
-      setPasswordError('Password is required');
+    if (value.trim() === "") {
+      setPasswordError("Password is required");
       return false;
     }
-    // Optionally enforce additional password requirements (e.g., minimum length)
-    setPasswordError('');
+    setPasswordError("");
     return true;
   };
 
-  // Form submission handler
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // Validate fields using current state values
     const isEmailValid = validateEmail();
     const isPasswordValid = validatePassword();
 
-    // If any field is invalid, display a submit error message and prevent submission
     if (!isEmailValid || !isPasswordValid) {
-      setSubmitError('Please fix the errors above');
-      setTimeout(() => setSubmitError(''), 3000);
-      return;
+      return; 
     }
 
-    // If all validations pass, proceed with login logic
-    console.log('Form submitted', { email, password });
-    
     try {
-      const response = await axios.post('http://localhost:3000/user/login', { email, password });
+      const response = await axios.post("http://localhost:3000/user/login", { email, password });
+
       if (response.data.success) {
-        localStorage.setItem('token', response.data.token);
-        console.log(response.data.data,'------------------------------------login resoponse data')
-        dispatch(login(response.data.data));
-        navigate('/home');
+        localStorage.setItem("token", response.data.token);
+        dispatch(login(response.data.data)); 
+        navigate("/home");
       } else {
-        toast.error(response.data.message);
+        toast.error(response.data.message || "Login failed");
       }
-    } catch (error) {
-      toast.error('Error logging in. Please try again.');
-      console.error('Error logging in:', error);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Error logging in. Please try again.");
+      console.error("Login Error:", error);
     }
-
-
-  };
-
-  // Toggle password visibility state
-  const togglePasswordVisibility = (): void => {
-    setShowPassword((prevState) => !prevState);
   };
 
   return (
@@ -112,37 +96,34 @@ const Login: React.FC = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => {
-              const val = e.currentTarget.value;
-              setEmail(val);
-              validateEmail(val);
+              setEmail(e.target.value);
+              validateEmail(e.target.value);
             }}
             required
           />
           {emailError && <span className="error">{emailError}</span>}
         </div>
         <div className="form-group">
-          {/* Wrap the password input and eye icon in a relative container */}
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: "relative" }}>
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={(e) => {
-                const val = e.currentTarget.value;
-                setPassword(val);
-                validatePassword(val);
+                setPassword(e.target.value);
+                validatePassword(e.target.value);
               }}
               required
-              style={{ paddingRight: '40px' }} // extra space for the icon
+              style={{ paddingRight: "40px" }}
             />
             <span
-              onClick={togglePasswordVisibility}
+              onClick={() => setShowPassword(!showPassword)}
               style={{
-                position: 'absolute',
-                right: '10px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                cursor: 'pointer',
+                position: "absolute",
+                right: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
               }}
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -150,7 +131,6 @@ const Login: React.FC = () => {
           </div>
           {passwordError && <span className="error">{passwordError}</span>}
         </div>
-        {submitError && <div className="error submit-error">{submitError}</div>}
         <button type="submit" className="login-button">
           Login
         </button>
@@ -159,19 +139,12 @@ const Login: React.FC = () => {
         <GoogleAuth />
       </div>
       <p>
-        Don't have an account? <a href="#" onClick={register}>Sign up</a>
+        Don't have an account?{" "}
+        <a href="#" onClick={register}>
+          Sign up
+        </a>
       </p>
-      <ToastContainer
-      position="top-right"
-      autoClose={5000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      />
+      <ToastContainer autoClose={5000} pauseOnHover />
     </div>
   );
 };

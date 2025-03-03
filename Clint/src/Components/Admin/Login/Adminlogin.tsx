@@ -1,45 +1,56 @@
-import React, { useState } from 'react';
-import './AdminLogin.css';
-import { useNavigate } from 'react-router-dom';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { ToastContainer, toast } from 'react-toastify';
-import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { login } from '../../../Redux/authSlice';
+import React, { useState, useEffect } from "react";
+import "./AdminLogin.css";
+import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { adminLogin } from "../../../Redux/authSlice";
 
 const AdminLogin: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [submitError, setSubmitError] = useState('');
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-  axios.defaults.withCredentials = true;
+  useEffect(() => {
+    const token = localStorage.getItem("admintoken");
+    if (token) {
+      navigate("/dashboard"); // ✅ Redirect if already logged in
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("admintoken");
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
+  }, []);
 
   const validateEmail = (value: string = email): boolean => {
-    if (value.trim() === '') {
-      setEmailError('Email is required');
+    if (value.trim() === "") {
+      setEmailError("Email is required");
       return false;
     }
     const emailRegex = /^[A-Za-z._\-\d]+@[A-Za-z]+\.[a-z]{2,}$/;
     if (!emailRegex.test(value.trim())) {
-      setEmailError('Invalid email format');
+      setEmailError("Invalid email format");
       return false;
     }
-    setEmailError('');
+    setEmailError("");
     return true;
   };
 
   const validatePassword = (value: string = password): boolean => {
-    if (value.trim() === '') {
-      setPasswordError('Password is required');
+    if (value.trim() === "") {
+      setPasswordError("Password is required");
       return false;
     }
-    setPasswordError('');
+    setPasswordError("");
     return true;
   };
 
@@ -49,23 +60,22 @@ const AdminLogin: React.FC = () => {
     const isPasswordValid = validatePassword();
 
     if (!isEmailValid || !isPasswordValid) {
-      setSubmitError('Please fix the errors above');
-      setTimeout(() => setSubmitError(''), 3000);
-      return;
+      return; // ✅ No need for `setSubmitError`, errors are already displayed
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/admin/login', { email, password });
+      const response = await axios.post("http://localhost:3000/admin/login", { email, password });
+
       if (response.data.success) {
-        localStorage.setItem('adminToken', response.data.token);
-        dispatch(login(response.data.data));
-        navigate('/dashboard');
+        localStorage.setItem("admintoken", response.data.token);
+        dispatch(adminLogin(response.data.data)); // ✅ Ensure this updates Redux state correctly
+        navigate("/dashboard");
       } else {
-        toast.error(response.data.message);
+        toast.error(response.data.message || "Login failed");
       }
-    } catch (error) {
-      toast.error('Error logging in. Please try again.');
-      console.error('Error logging in:', error);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Error logging in. Please try again.");
+      console.error("Login Error:", error);
     }
   };
 
@@ -86,9 +96,9 @@ const AdminLogin: React.FC = () => {
           />
           {emailError && <span className="error">{emailError}</span>}
         </div>
-        <div className="form-group" style={{ position: 'relative' }}>
+        <div className="form-group" style={{ position: "relative" }}>
           <input
-            type={showPassword ? 'text' : 'password'}
+            type={showPassword ? "text" : "password"}
             placeholder="Password"
             value={password}
             onChange={(e) => {
@@ -96,36 +106,25 @@ const AdminLogin: React.FC = () => {
               validatePassword(e.target.value);
             }}
             required
-            style={{ paddingRight: '40px' }}
+            style={{ paddingRight: "40px" }}
           />
           <span
             onClick={() => setShowPassword(!showPassword)}
             style={{
-              position: 'absolute',
-              right: '10px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              cursor: 'pointer',
+              position: "absolute",
+              right: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
             }}
           >
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </span>
           {passwordError && <span className="error">{passwordError}</span>}
         </div>
-        {submitError && <div className="error submit-error">{submitError}</div>}
         <button type="submit" className="admin-login-button">Login</button>
       </form>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer autoClose={5000} pauseOnHover />
     </div>
   );
 };

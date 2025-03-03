@@ -31,21 +31,27 @@ const authSlice = createSlice({
     reducers: {
         login: (state, action: PayloadAction<User>) => {
             state.isAuthenticated = true;
+            state.isAdmin = false; // Ensure it's a user login, not admin
             state.user = action.payload;
+            state.admin = { ...initialState.admin }; // Reset admin data
         },
         logout: (state) => {
             state.isAuthenticated = false;
+            state.isAdmin = false;
             state.user = { ...initialState.user };
+            state.admin = { ...initialState.admin }; // Reset admin on user logout
         },
         adminLogin: (state, action: PayloadAction<User>) => {
             state.isAuthenticated = true;
             state.isAdmin = true;
             state.admin = action.payload;
+            state.user = { ...initialState.user }; // Reset user data
         },
         adminLogout: (state) => {
             state.isAuthenticated = false;
             state.isAdmin = false;
             state.admin = { ...initialState.admin };
+            state.user = { ...initialState.user }; // Reset user on admin logout
         },
     },
 });

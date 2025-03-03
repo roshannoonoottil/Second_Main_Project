@@ -1,7 +1,6 @@
 
 import { useNavigate } from 'react-router-dom';
-// import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import './Dashboard.css'
 import { adminLogout } from '../../../Redux/authSlice';
@@ -10,18 +9,12 @@ function Dashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
-interface AuthState {
-  isAuthenticated: boolean; // true or false
-  isAdmin: boolean; // true or false
-
-}
-
-
-const isAuth = useSelector((state: { auth: AuthState }) => state.auth.isAuthenticated);
+const token = localStorage.getItem('admintoken')
 
 useEffect(()=>{
-  if(!isAuth){
-    navigate('/')
+  if(!token){
+    navigate('/admin')
+   
     return
   }
 })
@@ -31,6 +24,7 @@ useEffect(()=>{
       <h1>Admin Dashboard !</h1>
       <button onClick={(()=>{
             dispatch(adminLogout())
+            localStorage.removeItem('admintoken')
           })}>logout</button>
     </div>
   )

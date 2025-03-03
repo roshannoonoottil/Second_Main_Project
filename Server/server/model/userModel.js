@@ -50,6 +50,11 @@ const userSchema = new Schema({
     required: true,
     default: false, 
   },
+  
+  isProfileComplete: { 
+    type: Boolean, 
+    default: false 
+  },
 
   createdAt: {
     type: Date,

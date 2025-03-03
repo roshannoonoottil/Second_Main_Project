@@ -132,9 +132,15 @@ function SignUp() {
           'Content-Type': 'application/json'
         }
       });
-      if(response.status === 200){
+      if(response.status === 201){
         toast.success("Registration successful!");
-        navigate('/')
+        const user = response.data.data;
+
+        if (!user.isProfileComplete) {
+          navigate('/home'); // ✅ Redirect to profile completion
+        } else {
+          navigate('/home'); // ✅ Redirect to home if already complete
+        }
       }else{
         toast.error(response.data.message);
         
