@@ -14,52 +14,52 @@ export const connectDB = async () => {
   }
 };
 
-const userSchema = new Schema({
-  fullName: {
-    type: String,
-    required: true,
-    trim: true,
-  },
+  const userSchema = new Schema({
+    fullName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
-  mobile: {
-    type: String, 
-    // required: true,
-    trim: true,
-  },
+    mobile: {
+      type: String, 
+      // required: true,
+      trim: true,
+    },
 
-  email: {
-    type: String,
-    required: true,
-    trim: true,
-    unique: true,
-  },
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+    },
 
-  password: {
-    type: String,
-    // required: true,
-    trim: true,
-  },
+    password: {
+      type: String,
+      // required: true,
+      trim: true,
+    },
 
-  image: {
-    type: String,
-    trim: true,
-  },
+    image: {
+      type: String,
+      trim: true,
+    },
 
-  isAdmin: {
-    type: Boolean, 
-    required: true,
-    default: false, 
-  },
-  
-  isProfileComplete: { 
-    type: Boolean, 
-    default: false 
-  },
+    isAdmin: {
+      type: Boolean, 
+      required: true,
+      default: false, 
+    },
+    
+    isProfileComplete: { 
+      type: Boolean, 
+      default: false 
+    },
 
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+  });
 
 export default model("User", userSchema);

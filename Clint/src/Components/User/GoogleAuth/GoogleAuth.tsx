@@ -23,7 +23,7 @@ const GoogleAuth = () => {
         dispatch(login(res.data.data));
 
         const user = res.data.data;
-        console.log('isProfile--- :',res.data);
+        console.log('isProfile--- :',user.isProfileComplete);
   
         if (!user.isProfileComplete) {
           navigate('/complete-profile'); // ✅ Redirect to profile completion

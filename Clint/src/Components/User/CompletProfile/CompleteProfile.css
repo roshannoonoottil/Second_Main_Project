@@ -1,0 +1,82 @@
+/* Profile Container */
+.profile-container {
+    width: 420px;
+    margin: 50px auto;
+    padding: 25px;
+    background: #222831; /* Dark background */
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    color: #eeeeee; /* Light text */
+  }
+  
+  /* Form Styles */
+  .profile-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .profile-form label {
+    font-weight: bold;
+    margin-top: 12px;
+    color: #ffffff;
+    text-align: left;
+  }
+  
+  /* Input Fields */
+  .profile-form input {
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 6px;
+    background: #393e46;
+    color: #eeeeee;
+    font-size: 14px;
+  }
+  
+  .profile-form input:focus {
+    outline: 2px solid #00adb5;
+  }
+  
+  /* Profile Image */
+  .profile-image {
+    width: 110px;
+    height: 110px;
+    margin-top: 12px;
+    border-radius: 50%;
+    border: 3px solid #00adb5;
+    box-shadow: 0 0 10px rgba(0, 173, 181, 0.5);
+  }
+  
+ /* Buttons */
+button {
+    flex: 1; /* Makes buttons equal in width */
+    padding: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    background: #00adb5; /* Neon cyan */
+    color: white;
+    transition: background 0.3s ease-in-out;
+    margin: 0 5px; /* Small gap between buttons */
+}
+  
+  button:hover {
+    background: #007b83;
+  }
+  
+  /* Error Messages */
+  .error {
+    color: #ff4d4d;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  
+  /* Button Container */
+.button-group {
+    display: flex;
+    justify-content: space-between; /* Puts buttons on opposite sides */
+    margin-top: 15px;
+}

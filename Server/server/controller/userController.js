@@ -135,8 +135,9 @@ const googleLogin = async (req, res) => {
         };
 
         // Generate JWT token for session
-        const appToken = jwt.sign(userDetails, process.env.USER_JWT_SECRET, { expiresIn: "7d" });
-
+        const appToken = jwt.sign(userDetails, process.env.USER_JWT_SECRET, { expiresIn: "1h" });
+        console.log('Token :', appToken);
+        
         res.json({ success: true, token: appToken, data: userDetails });
         console.log("Google Sign-In successful:", userDetails);
         
@@ -146,5 +147,69 @@ const googleLogin = async (req, res) => {
     }
 };
 
+
+
+
+const home = async (req, res) => {
+    try {
+        console.log("Welcome to home page");
+        console.log('req data ---------->', req.user);
+        
+        const userData = await userModel.findOne({ email: req.user.email }).select('-password');
+
+        if (!userData) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        res.json({
+            success: true,
+            message: "Token verification success",
+            data: userData,
+        });
+    } catch (e) {
+        console.log("Error in the home controller:", e);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+const completeProfile = async (req, res) => {
+    try {
+        console.log("Request Body:", req.body);
+        console.log("Uploaded Image:", req.file);
+
+        // ✅ Extract required fields properly
+        const { userId, fullName, mobile } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ msg: "User ID is required" });
+        }
+
+        // ✅ Prepare update data
+        const updateData = { fullName, mobile };
+
+        // ✅ Add image if uploaded
+        if (req.file) {
+            updateData.image = `/images/${req.file.filename}`;
+        }
+
+        // ✅ Find and update user
+        const updatedUser = await userModel.findOneAndUpdate(
+            { _id: userId },
+            { $set: updateData },
+            { new: true, upsert: false } // ❌ upsert: true was creating new users
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ msg: "User not found" });
+        }
+
+        console.log("Updated User Data:", updatedUser);
+        res.json({ msg: "Profile updated successfully", data: updatedUser });
+
+    } catch (err) {
+        console.error("Error in completeProfile controller:", err);
+        res.status(500).json({ msg: "Internal server error" });
+    }
+};
     
-export default {signup, login, googleLogin}
+export default {signup, login, googleLogin, home, completeProfile}

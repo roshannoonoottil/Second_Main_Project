@@ -77,7 +77,7 @@ const Login: React.FC = () => {
         localStorage.setItem("token", response.data.token);
         dispatch(login(response.data.data)); 
         const user = response.data.data;
-        console.log('isProfile--- :',response.data);
+        // console.log('isProfile--- :',response.data);
   
         if (!user.isProfileComplete) {
           navigate('/complete-profile'); // ✅ Redirect to profile completion
