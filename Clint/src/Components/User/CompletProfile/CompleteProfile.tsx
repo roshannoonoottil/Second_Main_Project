@@ -121,7 +121,7 @@ const Profile: React.FC = () => {
   } 
 
   return (
-    <div className="max-w-sm mx-auto mt-12 p-6 bg-gray-900/90 backdrop-blur-lg shadow-xl rounded-lg text-white">
+    <div className="max-w-lg mx-auto mt-12 p-6 bg-gray-900/90 backdrop-blur-lg shadow-xl rounded-lg text-white">
       <h2 className="text-xl font-semibold text-center mb-4">Complete Profile</h2>
       <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
         
@@ -153,29 +153,31 @@ const Profile: React.FC = () => {
           className="w-full p-2 bg-gray-700 text-gray-300 rounded-md border border-gray-500 outline-none cursor-not-allowed"
         />
 
-              {/* Profile Image Upload */}
-      <div className="flex flex-col items-center">
-        <h3 className="text-sm font-semibold text-gray-300 mb-2">Update Profile Picture</h3>
-        
-        {/* Clickable Image */}
-        <label htmlFor="file-upload" className="cursor-pointer">
-          <img
-            src={newImage || imagePreview || "/default-profile.png"} // Default image if no profile picture
-            alt="Profile Preview"
-            className="w-20 h-20 rounded-full border-2 border-cyan-400 shadow-md object-cover transition hover:opacity-80"
-          />
-        </label>
+        {/* Profile Image Upload */}
+        <div className="flex flex-col items-center">
+          <h3 className="text-sm font-semibold text-gray-300 mb-2">Update Profile Picture</h3>
 
-        {/* Hidden File Input */}
-        <input
-          id="file-upload"
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          className="hidden"
-        />
-      </div>
-      {errors.image && <p className="text-red-400 text-xs">{errors.image}</p>}
+          {/* Clickable Image */}
+          <label htmlFor="file-upload" className="cursor-pointer">
+            <img
+              src={imagePreview || newImage || "/Propic_demo.webp"} // Fix: Ensure the default image is always there
+              alt="Profile Preview"
+              className="w-20 h-20 rounded-full border-2 border-cyan-400 shadow-md object-cover transition hover:opacity-80"
+              onError={(e) => (e.currentTarget.src = "/Propic_demo.webp")} // Fix: If the image fails to load, fallback to default
+            />
+          </label>
+
+          {/* Hidden File Input */}
+          <input
+            id="file-upload"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="hidden"
+          />
+        </div>
+        {errors.image && <p className="text-red-400 text-xs">{errors.image}</p>}
+
 
 
         {/* Buttons */}
