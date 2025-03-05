@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./CompleteProfile.css";
 import { useDispatch} from 'react-redux';
 import { logout } from "../../../Redux/authSlice";
 
@@ -122,47 +121,79 @@ const Profile: React.FC = () => {
   } 
 
   return (
-    <div className="profile-container">
-      <h2>Complete Profile</h2>
-      <form onSubmit={handleSubmit} className="profile-form">
-        <label>FullName:</label>
-        <input type="text" value={fullName} onChange={(e) => setUserName(e.target.value)} placeholder="Enter fullName" />
-        {errors.fullName && <p className="error">{errors.fullName}</p>}
+    <div className="max-w-sm mx-auto mt-12 p-6 bg-gray-900/90 backdrop-blur-lg shadow-xl rounded-lg text-white">
+      <h2 className="text-xl font-semibold text-center mb-4">Complete Profile</h2>
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+        
+        {/* Full Name */}
+        <input
+          type="text"
+          value={fullName}
+          onChange={(e) => setUserName(e.target.value)}
+          className="w-full p-2 bg-gray-800 text-white rounded-md border border-gray-600 focus:border-cyan-400 outline-none"
+          placeholder="Full Name"
+        />
+        {errors.fullName && <p className="text-red-400 text-xs">{errors.fullName}</p>}
 
-        <label>Mobile:</label>
-        <input type="text" value={mobile} onChange={(e) => setMobile(e.target.value)} placeholder="Enter mobile number" />
-        {errors.mobile && <p className="error">{errors.mobile}</p>}
+        {/* Mobile */}
+        <input
+          type="text"
+          value={mobile}
+          onChange={(e) => setMobile(e.target.value)}
+          className="w-full p-2 bg-gray-800 text-white rounded-md border border-gray-600 focus:border-cyan-400 outline-none"
+          placeholder="Mobile Number"
+        />
+        {errors.mobile && <p className="text-red-400 text-xs">{errors.mobile}</p>}
 
-        <label>Email:</label>
-        <input type="email" value={email} disabled />
+        {/* Email (Read-Only) */}
+        <input
+          type="email"
+          value={email || ""}
+          disabled
+          className="w-full p-2 bg-gray-700 text-gray-300 rounded-md border border-gray-500 outline-none cursor-not-allowed"
+        />
 
-        <label>Profile Image:</label>
-<input type="file" accept="image/*" onChange={handleImageChange} />
+              {/* Profile Image Upload */}
+      <div className="flex flex-col items-center">
+        <h3 className="text-sm font-semibold text-gray-300 mb-2">Update Profile Picture</h3>
+        
+        {/* Clickable Image */}
+        <label htmlFor="file-upload" className="cursor-pointer">
+          <img
+            src={newImage || imagePreview || "/default-profile.png"} // Default image if no profile picture
+            alt="Profile Preview"
+            className="w-20 h-20 rounded-full border-2 border-cyan-400 shadow-md object-cover transition hover:opacity-80"
+          />
+        </label>
 
-{imagePreview && (
-  <>
-    {newImage ? (
-      <img
-        src={newImage}
-        alt="New Image"
-        style={{ width: "100px", height: "100px", marginTop: "10px", borderRadius: "8px" }}
-      />
-    ) : (
-      <img
-        src={`http://localhost:3000${imagePreview}` || imagePreview}
-        alt="Profile Preview"
-        style={{ width: "100px", height: "100px", marginTop: "10px", borderRadius: "8px" }}
-      />
-    )}
-  </>
-)}
+        {/* Hidden File Input */}
+        <input
+          id="file-upload"
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="hidden"
+        />
+      </div>
+      {errors.image && <p className="text-red-400 text-xs">{errors.image}</p>}
 
-{errors.image && <p style={{ color: "red" }}>{errors.image}</p>}
-<div className="button-group">
-    <button type="submit">Continue</button>
-    <button type="button" onClick={handleCancel}>Logout</button>
-</div>
 
+        {/* Buttons */}
+        <div className="flex justify-between mt-4">
+          <button
+            type="submit"
+            className="w-1/2 px-4 py-2 bg-cyan-500 text-white rounded-md shadow hover:scale-105 hover:bg-cyan-600 transition"
+          >
+            Continue
+          </button>
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="w-1/2 px-4 py-2 bg-red-500 text-white rounded-md shadow hover:scale-105 hover:bg-red-600 transition"
+          >
+            Logout
+          </button>
+        </div>
       </form>
     </div>
   );

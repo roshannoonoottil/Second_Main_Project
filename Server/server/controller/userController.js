@@ -185,7 +185,7 @@ const completeProfile = async (req, res) => {
         }
 
         // ✅ Prepare update data
-        const updateData = { fullName, mobile };
+        const updateData = { fullName, mobile, isProfileComplete:true};
 
         // ✅ Add image if uploaded
         if (req.file) {
