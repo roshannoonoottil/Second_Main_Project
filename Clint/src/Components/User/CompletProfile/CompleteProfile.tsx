@@ -178,20 +178,18 @@ const Profile: React.FC = () => {
         </div>
         {errors.image && <p className="text-red-400 text-xs">{errors.image}</p>}
 
-
-
         {/* Buttons */}
-        <div className="flex justify-between mt-4">
+        <div className="flex gap-4 mt-4">
           <button
             type="submit"
-            className="w-1/2 px-4 py-2 bg-cyan-500 text-white rounded-md shadow hover:scale-105 hover:bg-cyan-600 transition"
+            className="flex-1 px-4 py-2 bg-cyan-500 text-white rounded-md shadow-md hover:scale-105 hover:bg-cyan-600 transition-transform"
           >
             Continue
           </button>
           <button
             type="button"
             onClick={handleCancel}
-            className="w-1/2 px-4 py-2 bg-red-500 text-white rounded-md shadow hover:scale-105 hover:bg-red-600 transition"
+            className="flex-1 px-4 py-2 bg-red-500 text-white rounded-md shadow-md hover:scale-105 hover:bg-red-600 transition-transform"
           >
             Logout
           </button>
