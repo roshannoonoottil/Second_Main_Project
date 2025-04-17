@@ -6,6 +6,10 @@ export const createPost = async (req, res) => {
     const { content, image } = req.body;
     const userId = req.user.userId;
 
+    console.log("content==>", content);
+    console.log("userId==>", userId);
+    console.log("image==>", image);
+    
     if (!content) {
       return res.status(400).json({ success: false, message: 'Post content is required.' });
     }

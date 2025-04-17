@@ -8,6 +8,7 @@ const TestComponent = lazy(()=>import('./Components/TestComponent'))
 const Home = lazy(() => import('./Components/User/Home/Body/Body'));
 const Dashboard = lazy(() => import('./Components/Admin/Dashboard/Dashboard'));
 const CompleteProfile = lazy(() => import('./Components/User/CompletProfile/CompleteProfile'));
+const CreatePost = lazy(()=> import('./Components/User/Post/CreatePost'))
 
 
 function App() {
@@ -80,13 +81,17 @@ function App() {
         <Router>
           <Suspense fallback={<div style={{ color: 'red' }}>Loading...</div>}>
             <Routes>
+              
               <Route path='/' element={<Login />} />
               <Route path='/signup' element={<SignUp />} />
               <Route path='/home' element={<Home/>}/>
               <Route path='/complete-profile' element={<CompleteProfile/>}/>
+
               <Route path='/admin' element={<AdminLogin />} />
               <Route path='/test' element={<TestComponent/>}/>
               <Route path='/dashboard' element={<Dashboard/>}/>
+
+              <Route path='/create' element={<CreatePost/>}/>
             </Routes>
           </Suspense>
         </Router>
