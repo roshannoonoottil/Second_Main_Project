@@ -178,7 +178,8 @@ const completeProfile = async (req, res) => {
         console.log("Uploaded Image:", req.file);
 
         // ✅ Extract required fields properly
-        const { userId, fullName, mobile } = req.body;
+        const { fullName, mobile } = req.body;
+        const userId = req.user.userId;
 
         if (!userId) {
             return res.status(400).json({ msg: "User ID is required" });
