@@ -8,6 +8,6 @@ router.post('/signup', userController.signup)
 router.post('/login', userController.login)
 router.post("/google-auth", userController.googleLogin);
 router.get('/home', verifyUser,  userController.home)
-router.post('/complete-profile', upload.single('image'), userController.completeProfile)
+router.post('/complete-profile', verifyUser,  upload.single('image'), userController.completeProfile)
 
 export default router;

@@ -7,6 +7,7 @@ import cors from 'cors'
 
 import adminRouter from './routes/adminRoute.js';
 import userRouter from './routes/userRoute.js';
+import postRouter from './routes/postRouter.js';
 
 const app = express();
 
@@ -29,5 +30,6 @@ app.use(express.static(path.join(process.cwd(), 'public')));
 
 app.use('/admin', adminRouter);
 app.use('/user', userRouter);
+app.use('/post', postRouter);
 
 export default app;
