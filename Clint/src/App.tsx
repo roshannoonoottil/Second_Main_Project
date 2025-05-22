@@ -73,7 +73,7 @@ function App() {
           zIndex: 2, // Ensures the UI stays above the shadow effect
           width: '100%',
           height: '100%', // Added to make sure this container fills the parent's height
-          display: 'flex',
+          display:'flex',
           justifyContent: 'center',
           alignItems: 'center',
         }}
