@@ -1,7 +1,14 @@
 export default function Sidebar() {
   return (
     <aside className="w-64 bg-gray-800 shadow-lg flex flex-col p-4">
-      <h1 className="text-2xl font-bold text-blue-400 mb-8">TailAdmin</h1>
+      <h1 className="flex items-center text-2xl font-bold text-blue-400 mb-8">
+        <img 
+          src="/logo.png" 
+          alt="icon" 
+          className="w-10 h-10 rounded-full mr-2"
+        />
+        Socials
+      </h1>
 
       <nav className="flex-1">
         <ul className="space-y-2 text-sm">

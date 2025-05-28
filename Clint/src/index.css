@@ -1,5 +1,8 @@
-@import "tailwindcss";
+/* src/index.css or your primary input CSS file for Tailwind CSS v4.0 */
 
+@tailwind utilities; /* Only this one is needed for v4 */
+
+/* Your custom CSS follows below */
 body {
   margin: 0;
   display: flex;
