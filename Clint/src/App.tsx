@@ -9,6 +9,8 @@ const Home = lazy(() => import('./Components/User/Home/Body/Body'));
 const Dashboard = lazy(() => import('./Components/Admin/Dashboard/Dashboard'));
 const CompleteProfile = lazy(() => import('./Components/User/CompletProfile/CompleteProfile'));
 const CreatePost = lazy(() => import('./Components/User/Post/CreatePost'));
+const AdminLayout = lazy(() => import('./Components/Admin/AdminLayout'));
+
 
 function App() {
   return (
@@ -24,7 +26,7 @@ function App() {
         backgroundImage: "url('/pexels-italo-melo-248867-2378959.jpg')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-      }}
+      }} 
     >
       <Router>
         <Suspense fallback={<div>Loading...</div>}>
@@ -35,8 +37,14 @@ function App() {
             <Route path='/complete-profile' element={<CompleteProfile />} />
             <Route path='/admin' element={<AdminLogin />} />
             <Route path='/test' element={<TestComponent />} />
-            <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/create' element={<CreatePost />} />
+
+            {/* Admin Protected Routes */}
+            <Route path="/dashboard" element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
+              {/* Add more nested admin routes here if needed */}
+            </Route>
+
           </Routes>
         </Suspense>
       </Router>
