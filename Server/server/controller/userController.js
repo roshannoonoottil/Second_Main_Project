@@ -6,20 +6,20 @@ import { OAuth2Client } from "google-auth-library";
 
 
 
-const signup = async (req, res) => {
+const signup =  async (req, res) => {
 
     try {
         console.log('signup Controller');
         console.log(req.body);
-
+        
         const { fullName, mobile, email, password } = req.body;
         let user = await userModel.findOne({ email });
         console.log("User Exist : ", user);
         if (user) return res.status(400).send("This email is already used.");
-
+    
         const hashPass = await bcrypt.hash(password, 10);
         console.log('hashed password', hashPass);
-
+    
         const userData = new userModel({
             fullName,
             mobile,
@@ -28,8 +28,8 @@ const signup = async (req, res) => {
             isProfileComplete: false,
             isAdmin: 'false'
         });
-        console.log('User Details :', userData);
-
+        console.log('User Details :',userData);
+        
         await userData.save();
         console.log("Saved data", userData);
         res.json({ data: "User data saved in database" });
@@ -49,14 +49,6 @@ const login = async (req, res) => {
             return res.json({ success: false, message: 'Invalid email' });
         }
 
-        if (userData.email && !userData.password) {
-            return res.status(400).json({
-                success: false,
-                message: "Use Google to log in to this account."
-            });
-        }
-
-
         // Compare passwords
         const isValidPassword = await bcrypt.compare(req.body.password, userData.password);
         if (!isValidPassword) {
@@ -69,7 +61,7 @@ const login = async (req, res) => {
             fullName: userData.fullName,  // Changed from `name` to `fullName` to match signup
             email: userData.email,
             mobile: userData.mobile,
-            isProfileComplete: userData.isProfileComplete,
+            isProfileComplete: userData.isProfileComplete, 
             isAdmin: userData.isAdmin,   // Ensure isAdmin is included
             createdAt: userData.createdAt,
         };
@@ -124,7 +116,7 @@ const googleLogin = async (req, res) => {
                 fullName: payload.name,  // Store full name from Google
                 email: payload.email,
                 profilePicture: payload.picture, // Save profile image
-                isProfileComplete: false,
+                isProfileComplete: false, 
                 isAdmin: false,  // Default to false unless specified
                 googleId: payload.sub, // Store Google user ID
             });
@@ -137,7 +129,7 @@ const googleLogin = async (req, res) => {
             fullName: user.fullName,
             email: user.email,
             profilePicture: user.profilePicture,
-            isProfileComplete: user.isProfileComplete,
+            isProfileComplete: user.isProfileComplete, 
             isAdmin: user.isAdmin,
             createdAt: user.createdAt,
         };
@@ -145,10 +137,10 @@ const googleLogin = async (req, res) => {
         // Generate JWT token for session
         const appToken = jwt.sign(userDetails, process.env.USER_JWT_SECRET, { expiresIn: "1h" });
         console.log('Token :', appToken);
-
+        
         res.json({ success: true, token: appToken, data: userDetails });
         console.log("Google Sign-In successful:", userDetails);
-
+        
     } catch (error) {
         console.error("Google login error:", error);
         res.status(500).json({ success: false, message: "Internal server error" });
@@ -162,7 +154,7 @@ const home = async (req, res) => {
     try {
         console.log("Welcome to home page");
         console.log('req data ---------->', req.user);
-
+        
         const userData = await userModel.findOne({ email: req.user.email }).select('-password');
 
         if (!userData) {
@@ -194,7 +186,7 @@ const completeProfile = async (req, res) => {
         }
 
         // ✅ Prepare update data
-        const updateData = { fullName, mobile, isProfileComplete: true };
+        const updateData = { fullName, mobile, isProfileComplete:true};
 
         // ✅ Add image if uploaded
         if (req.file) {
@@ -220,5 +212,5 @@ const completeProfile = async (req, res) => {
         res.status(500).json({ msg: "Internal server error" });
     }
 };
-
-export default { signup, login, googleLogin, home, completeProfile }
+    
+export default {signup, login, googleLogin, home, completeProfile}
