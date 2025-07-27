@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './SignUp.css';
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
@@ -157,63 +156,113 @@ function SignUp() {
   };
 
   return (
-    <div className="signup-container">
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
-        {/* Full Name */}
-        <div className="form-group">
-          <input type="text" placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} onBlur={validateFullName} />
-          {fullNameError && <span className="error">{fullNameError}</span>}
-        </div>
-        {/* Email */}
-        <div className="form-group">
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} onBlur={validateEmail} />
-          {emailError && <span className="error">{emailError}</span>}
-        </div>
-        {/* Mobile Number */}
-        <div className="form-group">
-          <input type="tel" placeholder="Mobile Number" value={mobile} onChange={(e) => setMobile(e.target.value)} onBlur={validateMobile} />
-          {mobileError && <span className="error">{mobileError}</span>}
-        </div>
-        {/* Password */}
-        <div className="form-group">
-          <div style={{ position: 'relative' }}>
-            <input type={showPassword ? 'text' : 'password'} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onBlur={validatePassword} style={{ paddingRight: '40px' }} required />
-            <span onClick={() => setShowPassword((prev) => !prev)} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }}>
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
-          {passwordError && <span className="error">{passwordError}</span>}
-        </div>
-        {/* Confirm Password */}
-        <div className="form-group">
-          <div style={{ position: 'relative' }}>
-            <input type={showConfirmPassword ? 'text' : 'password'} placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} onBlur={validateConfirmPassword} style={{ paddingRight: '40px' }} required />
-            <span onClick={() => setShowConfirmPassword((prev) => !prev)} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }}>
-              {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
-          {confirmPasswordError && <span className="error">{confirmPasswordError}</span>}
-        </div>
-        {submitError && <div className="error submit-error">{submitError}</div>}
-        <button type="submit" className="signup-button">Register</button>
-      </form>
-      <GoogleAuth/>
-      <p>Already have an account? <a href="#" onClick={login}>Login</a></p>
+  <div className="bg-[#1e1e1ec7] rounded-lg p-6 w-[300px] text-center shadow-lg text-white">
+    <h1 className="text-xl mb-4 font-semibold">Sign Up</h1>
+    <form onSubmit={handleSubmit}>
+      {/* Full Name */}
+      <div className="mb-3">
+        <input
+          type="text"
+          placeholder="Full Name"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          onBlur={validateFullName}
+          className="w-full px-3 py-2 bg-[#2a2a2a] text-white text-sm rounded focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-400"
+        />
+        {fullNameError && <span className="text-red-400 text-xs font-mono">{fullNameError}</span>}
+      </div>
+      {/* Email */}
+      <div className="mb-3">
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onBlur={validateEmail}
+          className="w-full px-3 py-2 bg-[#2a2a2a] text-white text-sm rounded focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-400"
+        />
+        {emailError && <span className="text-red-400 text-xs font-mono">{emailError}</span>}
+      </div>
+      {/* Mobile Number */}
+      <div className="mb-3">
+        <input
+          type="tel"
+          placeholder="Mobile Number"
+          value={mobile}
+          onChange={(e) => setMobile(e.target.value)}
+          onBlur={validateMobile}
+          className="w-full px-3 py-2 bg-[#2a2a2a] text-white text-sm rounded focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-400"
+        />
+        {mobileError && <span className="text-red-400 text-xs font-mono">{mobileError}</span>}
+      </div>
+      {/* Password */}
+      <div className="mb-3 relative">
+        <input
+          type={showPassword ? 'text' : 'password'}
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          onBlur={validatePassword}
+          required
+          className="w-full px-3 py-2 pr-10 bg-[#2a2a2a] text-white text-sm rounded focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-400"
+        />
+        <span
+          onClick={() => setShowPassword((prev) => !prev)}
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-400"
+        >
+          {showPassword ? <FaEyeSlash /> : <FaEye />}
+        </span>
+        {passwordError && <span className="text-red-400 text-xs font-mono">{passwordError}</span>}
+      </div>
+      {/* Confirm Password */}
+      <div className="mb-3 relative">
+        <input
+          type={showConfirmPassword ? 'text' : 'password'}
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          onBlur={validateConfirmPassword}
+          required
+          className="w-full px-3 py-2 pr-10 bg-[#2a2a2a] text-white text-sm rounded focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-400"
+        />
+        <span
+          onClick={() => setShowConfirmPassword((prev) => !prev)}
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-400"
+        >
+          {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+        </span>
+        {confirmPasswordError && <span className="text-red-400 text-xs font-mono">{confirmPasswordError}</span>}
+      </div>
+      {submitError && <div className="text-red-400 text-xs font-mono mb-2">{submitError}</div>}
+      <button
+        type="submit"
+        className="w-full bg-gradient-to-r from-violet-600 to-blue-500 text-white font-semibold py-2 rounded hover:from-blue-500 hover:to-violet-600 transition"
+      >
+        Register
+      </button>
+    </form>
+    <GoogleAuth />
+    <p className="mt-3 text-xs text-gray-400">
+      Already have an account?{' '}
+      <a href="#" onClick={login} className="text-white hover:text-blue-400">
+        Login
+      </a>
+    </p>
 
-      <ToastContainer
-position="top-right"
-autoClose={5000}
-hideProgressBar={false}
-newestOnTop={false}
-closeOnClick
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover
-/>
-    </div>
-  );
+    <ToastContainer
+      position="top-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+    />
+  </div>
+);
+
 }
 
 export default SignUp;
