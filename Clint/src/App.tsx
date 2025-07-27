@@ -23,7 +23,7 @@ function App() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundImage: "url('/pexels-italo-melo-248867-2378959.jpg')",
+        backgroundImage: "url('/bg-img.png')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }} 
