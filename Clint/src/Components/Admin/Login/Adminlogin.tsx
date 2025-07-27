@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./AdminLogin.css";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
@@ -80,52 +79,57 @@ const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div className="admin-login-container">
-      <h1>Admin Login</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <input
-            type="email"
-            placeholder="Admin Email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              validateEmail(e.target.value);
-            }}
-            required
-          />
-          {emailError && <span className="error">{emailError}</span>}
-        </div>
-        <div className="form-group" style={{ position: "relative" }}>
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              validatePassword(e.target.value);
-            }}
-            required
-            style={{ paddingRight: "40px" }}
-          />
-          <span
-            onClick={() => setShowPassword(!showPassword)}
-            style={{
-              position: "absolute",
-              right: "10px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              cursor: "pointer",
-            }}
-          >
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
-          </span>
-          {passwordError && <span className="error">{passwordError}</span>}
-        </div>
-        <button type="submit" className="admin-login-button">Login</button>
-      </form>
-      <ToastContainer autoClose={5000} pauseOnHover />
+    <div className="bg-[#1e1e1ec7] rounded-md p-6 w-[320px] text-center shadow-[0_5px_15px_rgba(0,0,0,0.6)]">
+  <h1 className="text-[22px] mb-4 text-white">Admin Login</h1>
+  <form onSubmit={handleSubmit}>
+    <div className="mb-2">
+      <input
+        type="email"
+        placeholder="Admin Email"
+        value={email}
+        onChange={(e) => {
+          setEmail(e.target.value);
+          validateEmail(e.target.value);
+        }}
+        required
+        className="w-full p-3 bg-[#2a2a2a] text-white text-sm rounded placeholder:text-[#b0b0b0] focus:outline-none focus:ring-1 focus:ring-[#00bcd4] focus:shadow-[0_0_5px_#00bcd4] mb-1"
+      />
+      {emailError && (
+        <span className="text-[rgb(246,87,87)] font-mono text-sm">{emailError}</span>
+      )}
     </div>
+    <div className="mb-2 relative">
+      <input
+        type={showPassword ? "text" : "password"}
+        placeholder="Password"
+        value={password}
+        onChange={(e) => {
+          setPassword(e.target.value);
+          validatePassword(e.target.value);
+        }}
+        required
+        className="w-full p-3 pr-10 bg-[#2a2a2a] text-white text-sm rounded placeholder:text-[#b0b0b0] focus:outline-none focus:ring-1 focus:ring-[#00bcd4] focus:shadow-[0_0_5px_#00bcd4] mb-1"
+      />
+      <span
+        onClick={() => setShowPassword(!showPassword)}
+        className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-white"
+      >
+        {showPassword ? <FaEyeSlash /> : <FaEye />}
+      </span>
+      {passwordError && (
+        <span className="text-[rgb(246,87,87)] font-mono text-sm">{passwordError}</span>
+      )}
+    </div>
+    <button
+      type="submit"
+      className="w-full p-3 mt-2 text-[15px] font-bold text-white rounded bg-gradient-to-r from-[#00bcd4] to-[#006064] transition hover:from-[#006064] hover:to-[#00bcd4]"
+    >
+      Login
+    </button>
+  </form>
+  <ToastContainer autoClose={5000} pauseOnHover />
+</div>
+
   );
 };
 
