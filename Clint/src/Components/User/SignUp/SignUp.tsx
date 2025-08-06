@@ -156,111 +156,122 @@ function SignUp() {
   };
 
   return (
-  <div className="bg-[#1e1e1ec7] rounded-lg p-6 w-[300px] text-center shadow-lg text-white">
-    <h1 className="text-xl mb-4 font-semibold">Sign Up</h1>
-    <form onSubmit={handleSubmit}>
-      {/* Full Name */}
-      <div className="mb-3">
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          onBlur={validateFullName}
-          className="w-full px-3 py-2 bg-[#2a2a2a] text-white text-sm rounded focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-400"
-        />
-        {fullNameError && <span className="text-red-400 text-xs font-mono">{fullNameError}</span>}
-      </div>
-      {/* Email */}
-      <div className="mb-3">
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onBlur={validateEmail}
-          className="w-full px-3 py-2 bg-[#2a2a2a] text-white text-sm rounded focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-400"
-        />
-        {emailError && <span className="text-red-400 text-xs font-mono">{emailError}</span>}
-      </div>
-      {/* Mobile Number */}
-      <div className="mb-3">
-        <input
-          type="tel"
-          placeholder="Mobile Number"
-          value={mobile}
-          onChange={(e) => setMobile(e.target.value)}
-          onBlur={validateMobile}
-          className="w-full px-3 py-2 bg-[#2a2a2a] text-white text-sm rounded focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-400"
-        />
-        {mobileError && <span className="text-red-400 text-xs font-mono">{mobileError}</span>}
-      </div>
-      {/* Password */}
-      <div className="mb-3 relative">
-        <input
-          type={showPassword ? 'text' : 'password'}
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onBlur={validatePassword}
-          required
-          className="w-full px-3 py-2 pr-10 bg-[#2a2a2a] text-white text-sm rounded focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-400"
-        />
-        <span
-          onClick={() => setShowPassword((prev) => !prev)}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-400"
-        >
-          {showPassword ? <FaEyeSlash /> : <FaEye />}
-        </span>
-        {passwordError && <span className="text-red-400 text-xs font-mono">{passwordError}</span>}
-      </div>
-      {/* Confirm Password */}
-      <div className="mb-3 relative">
-        <input
-          type={showConfirmPassword ? 'text' : 'password'}
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          onBlur={validateConfirmPassword}
-          required
-          className="w-full px-3 py-2 pr-10 bg-[#2a2a2a] text-white text-sm rounded focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-400"
-        />
-        <span
-          onClick={() => setShowConfirmPassword((prev) => !prev)}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-400"
-        >
-          {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-        </span>
-        {confirmPasswordError && <span className="text-red-400 text-xs font-mono">{confirmPasswordError}</span>}
-      </div>
-      {submitError && <div className="text-red-400 text-xs font-mono mb-2">{submitError}</div>}
-      <button
-        type="submit"
-        className="w-full bg-gradient-to-r from-violet-600 to-blue-500 text-white font-semibold py-2 rounded hover:from-blue-500 hover:to-violet-600 transition"
-      >
-        Register
-      </button>
-    </form>
-    <GoogleAuth />
-    <p className="mt-3 text-xs text-gray-400">
-      Already have an account?{' '}
-      <a href="#" onClick={login} className="text-white hover:text-blue-400">
-        Login
-      </a>
-    </p>
+<div className="bg-[#f9f6ee] rounded-md p-6 w-[300px] text-left shadow-lg text-black border border-[#d8d1c3] font-serif"
+     style={{ backgroundImage: "url('/paper-texture.png')", backgroundSize: "cover", backgroundBlendMode: "multiply" }}>
+  <h1 className="text-xl mb-4 font-bold underline decoration-2 decoration-black text-center">Sign Up</h1>
 
-    <ToastContainer
-      position="top-right"
-      autoClose={5000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-    />
-  </div>
+  <form onSubmit={handleSubmit}>
+    {/* Full Name */}
+    <div className="mb-3">
+      <input
+        type="text"
+        placeholder="Full Name"
+        value={fullName}
+        onChange={(e) => setFullName(e.target.value)}
+        onBlur={validateFullName}
+        className="w-full px-3 py-2 bg-[#fffdf7] text-black text-sm border border-[#ccc] rounded placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-black"
+      />
+      {fullNameError && <span className="text-red-700 text-xs font-mono">{fullNameError}</span>}
+    </div>
+
+    {/* Email */}
+    <div className="mb-3">
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        onBlur={validateEmail}
+        className="w-full px-3 py-2 bg-[#fffdf7] text-black text-sm border border-[#ccc] rounded placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-black"
+      />
+      {emailError && <span className="text-red-700 text-xs font-mono">{emailError}</span>}
+    </div>
+
+    {/* Mobile Number */}
+    <div className="mb-3">
+      <input
+        type="tel"
+        placeholder="Mobile Number"
+        value={mobile}
+        onChange={(e) => setMobile(e.target.value)}
+        onBlur={validateMobile}
+        className="w-full px-3 py-2 bg-[#fffdf7] text-black text-sm border border-[#ccc] rounded placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-black"
+      />
+      {mobileError && <span className="text-red-700 text-xs font-mono">{mobileError}</span>}
+    </div>
+
+    {/* Password */}
+    <div className="mb-3 relative">
+      <input
+        type={showPassword ? 'text' : 'password'}
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        onBlur={validatePassword}
+        required
+        className="w-full px-3 py-2 pr-10 bg-[#fffdf7] text-black text-sm border border-[#ccc] rounded placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-black"
+      />
+      <span
+        onClick={() => setShowPassword((prev) => !prev)}
+        className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600"
+      >
+        {showPassword ? <FaEyeSlash /> : <FaEye />}
+      </span>
+      {passwordError && <span className="text-red-700 text-xs font-mono">{passwordError}</span>}
+    </div>
+
+    {/* Confirm Password */}
+    <div className="mb-3 relative">
+      <input
+        type={showConfirmPassword ? 'text' : 'password'}
+        placeholder="Confirm Password"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        onBlur={validateConfirmPassword}
+        required
+        className="w-full px-3 py-2 pr-10 bg-[#fffdf7] text-black text-sm border border-[#ccc] rounded placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-black"
+      />
+      <span
+        onClick={() => setShowConfirmPassword((prev) => !prev)}
+        className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600"
+      >
+        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+      </span>
+      {confirmPasswordError && <span className="text-red-700 text-xs font-mono">{confirmPasswordError}</span>}
+    </div>
+
+    {submitError && <div className="text-red-700 text-xs font-mono mb-2">{submitError}</div>}
+
+    <button
+      type="submit"
+      className="w-full bg-black text-white font-semibold py-2 rounded hover:bg-gray-800 transition"
+    >
+      Register
+    </button>
+  </form>
+
+  <GoogleAuth />
+
+  <p className="mt-3 text-xs text-gray-700 text-center">
+    Already have an account?{' '}
+    <a href="#" onClick={login} className="text-black underline hover:text-gray-800">
+      Login
+    </a>
+  </p>
+
+  <ToastContainer
+    position="top-right"
+    autoClose={5000}
+    hideProgressBar={false}
+    newestOnTop={false}
+    closeOnClick
+    rtl={false}
+    pauseOnFocusLoss
+    draggable
+    pauseOnHover
+  />
+</div>
+
 );
 
 }

@@ -93,10 +93,11 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#1e1e1ec7] rounded-md p-5 w-[300px] text-center shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
-  <h1 className="text-[22px] mb-4 text-white">User Login</h1>
+    <div className="rounded-md p-5 w-[320px] bg-[#f8f3e8] text-center shadow-lg border border-[#222] font-serif text-black">
+  <h1 className="text-[22px] mb-4 underline decoration-[2px] underline-offset-4">User Login</h1>
   <form onSubmit={handleSubmit}>
-    <div className="mb-2">
+    <div className="mb-2 text-left">
+      <label className="block mb-1 text-sm font-semibold">Email</label>
       <input
         type="email"
         placeholder="Email"
@@ -106,13 +107,15 @@ const Login: React.FC = () => {
           validateEmail(e.target.value);
         }}
         required
-        className="w-full p-2.5 bg-[#2a2a2a] text-white text-sm rounded placeholder:text-[#b0b0b0] focus:outline-none focus:ring-1 focus:ring-[#6a11cb] focus:shadow-[0_0_5px_#6a11cb] mb-1"
+        className="w-full p-2 bg-[#fffef8] border border-[#444] text-sm text-black rounded placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-black"
       />
       {emailError && (
-        <span className="text-[rgb(246,87,87)] font-mono text-sm">{emailError}</span>
+        <span className="text-red-600 font-mono text-sm">{emailError}</span>
       )}
     </div>
-    <div className="mb-2 relative">
+
+    <div className="mb-2 relative text-left">
+      <label className="block mb-1 text-sm font-semibold">Password</label>
       <input
         type={showPassword ? "text" : "password"}
         placeholder="Password"
@@ -122,40 +125,45 @@ const Login: React.FC = () => {
           validatePassword(e.target.value);
         }}
         required
-        className="w-full p-2.5 pr-10 bg-[#2a2a2a] text-white text-sm rounded placeholder:text-[#b0b0b0] focus:outline-none focus:ring-1 focus:ring-[#6a11cb] focus:shadow-[0_0_5px_#6a11cb] mb-1"
+        className="w-full p-2 pr-10 bg-[#fffef8] border border-[#444] text-sm text-black rounded placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-black"
       />
       <span
         onClick={() => setShowPassword(!showPassword)}
-        className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-white"
+        className="absolute right-2 top-9 cursor-pointer text-black"
       >
         {showPassword ? <FaEyeSlash /> : <FaEye />}
       </span>
       {passwordError && (
-        <span className="text-[rgb(246,87,87)] font-mono text-sm">{passwordError}</span>
+        <span className="text-red-600 font-mono text-sm">{passwordError}</span>
       )}
     </div>
+
     <button
       type="submit"
-      className="w-full p-2.5 mt-2 font-bold text-sm text-white rounded bg-gradient-to-r from-[#6a11cb] to-[#2575fc] hover:from-[#2575fc] hover:to-[#6a11cb]"
+      className="w-full p-2 mt-3 font-bold text-sm bg-black text-white rounded hover:bg-gray-800 transition"
     >
       Login
     </button>
   </form>
-  <div className="my-2">
+
+  <div className="my-3">
     <GoogleAuth />
   </div>
-  <p className="mt-2 text-xs text-[#b0b0b0]">
+
+  <p className="mt-2 text-xs text-gray-700">
     Don't have an account?{" "}
     <a
       href="#"
       onClick={register}
-      className="text-white hover:text-[#25d5fc] transition"
+      className="text-black underline hover:text-gray-900"
     >
       Sign up
     </a>
   </p>
+
   <ToastContainer autoClose={5000} pauseOnHover />
 </div>
+
 
   );
 };

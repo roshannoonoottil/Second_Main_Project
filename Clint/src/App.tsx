@@ -5,7 +5,7 @@ const SignUp = lazy(() => import('./Components/User/SignUp/SignUp'));
 const Login = lazy(() => import('./Components/User/Login/Login'));
 const AdminLogin = lazy(() => import('./Components/Admin/Login/Adminlogin'));
 const TestComponent = lazy(() => import('./Components/TestComponent'));
-const Home = lazy(() => import('./Components/User/Home/Body/Body'));
+const Home = lazy(() => import('./Components/User/Home/Home'));
 const Dashboard = lazy(() => import('./Components/Admin/Dashboard/Dashboard'));
 const CompleteProfile = lazy(() => import('./Components/User/CompletProfile/CompleteProfile'));
 const CreatePost = lazy(() => import('./Components/User/Post/CreatePost'));
@@ -13,23 +13,15 @@ const AdminLayout = lazy(() => import('./Components/Admin/AdminLayout'));
 
 
 function App() {
-  return (
-    <div
-      style={{
-        height: '100vh',
-        width: '100vw',
-        margin: 0,
-        padding: 0,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundImage: "url('/bg-img.png')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }} 
-    >
+ return (
+  <div className="relative h-screen w-screen m-0 p-0 bg-[url('/bg-img.png')] bg-cover bg-center font-newspaper text-[17px] leading-relaxed text-gray-800">
+    {/* Shadow Overlay */}
+    <div className="absolute inset-0 bg-black/70 z-10" />
+
+    {/* App Content on top of shadow */}
+    <div className="relative z-20 flex justify-center items-center h-full w-full">
       <Router>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div className="text-white">Loading...</div>}>
           <Routes>
             <Route path='/' element={<Login />} />
             <Route path='/signup' element={<SignUp />} />
@@ -42,14 +34,14 @@ function App() {
             {/* Admin Protected Routes */}
             <Route path="/dashboard" element={<AdminLayout />}>
               <Route index element={<Dashboard />} />
-              {/* Add more nested admin routes here if needed */}
             </Route>
-
           </Routes>
         </Suspense>
       </Router>
     </div>
-  );
+  </div>
+);
+
 }
 
 export default App;
