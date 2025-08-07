@@ -8,7 +8,7 @@ const TestComponent = lazy(() => import('./Components/TestComponent'));
 const Home = lazy(() => import('./Components/User/Home/Home'));
 const Dashboard = lazy(() => import('./Components/Admin/Dashboard/Dashboard'));
 const CompleteProfile = lazy(() => import('./Components/User/CompletProfile/CompleteProfile'));
-const CreatePost = lazy(() => import('./Components/User/Post/CreatePost'));
+// const CreatePost = lazy(() => import('./Components/User/Post/CreatePost'));
 const AdminLayout = lazy(() => import('./Components/Admin/AdminLayout'));
 
 
@@ -29,7 +29,7 @@ function App() {
             <Route path='/complete-profile' element={<CompleteProfile />} />
             <Route path='/admin' element={<AdminLogin />} />
             <Route path='/test' element={<TestComponent />} />
-            <Route path='/create' element={<CreatePost />} />
+            {/* <Route path='/create' element={<CreatePost />} /> */}
 
             {/* Admin Protected Routes */}
             <Route path="/dashboard" element={<AdminLayout />}>
