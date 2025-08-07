@@ -23,3 +23,18 @@ export const createPost = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error.' });
   }
 };
+
+
+export const getAllPosts = async (req, res) => {
+  try {
+    const posts = await Post.find()
+      .populate('userId', 'fullName email profilePicture') // only select fields you need
+      .populate('comments.userId', 'fullName profilePicture') // populate user info in comments too
+      .sort({ createdAt: -1 }); // optional: latest posts first
+
+    res.status(200).json({ success: true, posts });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};

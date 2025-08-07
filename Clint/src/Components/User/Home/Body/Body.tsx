@@ -1,8 +1,67 @@
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 import './body.css'
 
 function Body() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [posts, setPosts] = useState([]);
+   const [content, setContent] = useState<string>('');
+  const [image, setImage] = useState<File | null>(null);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/post/posts');
+        const data = await response.json();
+        console.log('user data =>',data);
+        
+        if (data.success) {
+          setPosts(data.posts);
+        } else {
+          console.error('Failed to fetch posts');
+        }
+      } catch (err) {
+        console.error('Error fetching posts:', err);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+  
+      const formData = new FormData();
+      formData.append('content', content);
+      if (image) {
+        formData.append('image', image);
+      }
+      console.log("form data==>", formData,"imge==>", image);
+      
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.post('http://localhost:3000/post/create', formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+  
+        toast.success(res.data.message || 'Post created!');
+        setContent('');
+        setImage(null);
+        setIsModalOpen(false)
+      } catch (err: any) {
+        toast.error(err?.response?.data?.message || 'Failed to create post');
+      }
+    };
+  
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files[0]) {
+        setImage(e.target.files[0]);
+      }
+    };
 
   return (
     <main className="flex-1 px-2 md:px-4 py-4 flex flex-col md:flex-row gap-3 text-base">
@@ -33,27 +92,34 @@ function Body() {
           {/* Scrollable Post Feed */}
           <div className="space-y-3 max-h-[700px] overflow-y-auto pr-2 scrollbar-hide">
             {/* Sample Post */}
-            <div className="bg-white/80 rounded p-3 shadow-sm text-base">
-              <div className="flex items-center gap-2 mb-1">
-                <img
-                  src="https://randomuser.me/api/portraits/men/32.jpg"
-                  alt="User"
-                  className="w-8 h-8 rounded-full"
-                />
-                <div>
-                  <h3 className="font-semibold text-gray-800 text-lg">John Doe</h3>
-                  <p className="text-gray-500 text-base">Just now</p>
+            {posts.length > 0 ? (
+              posts.map((post, index) => (
+                <div key={index} className="bg-white/80 rounded p-3 shadow-sm text-base">
+                  <div className="flex items-center gap-2 mb-1">
+                    <img
+                      src={post.userId.userImage || "https://via.placeholder.com/40"} // fallback image
+                      alt="User"
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <div>
+                      <h3 className="font-semibold text-gray-800 text-lg">{post.userId.fullName || 'Anonymous'}</h3>
+                      <p className="text-gray-500 text-sm">{new Date(post.createdAt).toLocaleString()}</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 mb-2">{post.content}</p>
+                  {post.imageUrl && (
+                    <img
+                      src={post.imageUrl}
+                      alt="Post"
+                      className="w-full object-cover rounded-md"
+                    />
+                  )}
                 </div>
-              </div>
-              <p className="text-gray-700 mb-2">
-                Just posted a new photo from my vacation! 🌴
-              </p>
-              <img
-                src="https://imgs.search.brave.com/GKaJFzPcOIsI6VPUMTpkX3QXfrR1zWVwGZSBpjcVfr4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/Ym13YmxvZy5jb20v/d3AtY29udGVudC91/cGxvYWRzLzIwMjUv/MDYvMjAyNS1ibXct/bTUtZzkwLXNlcGlh/LW1ldGFsbGljLTM4/LTgzMHg1NTMuanBn"
-                alt="Post"
-                className="w-full object-cover rounded-md"
-              />
-            </div>
+              ))
+            ) : (
+              <p className="text-gray-600">No posts available.</p>
+            )}
+
             {/* Add more post cards here */}
           </div>
         </section>
@@ -71,6 +137,10 @@ function Body() {
 
       {/* Create Post Modal */}
       {isModalOpen && (
+        <form 
+        onSubmit={handleSubmit}
+        >
+          
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white w-[90%] max-w-md p-4 rounded shadow-lg text-base relative">
             <button
@@ -83,12 +153,13 @@ function Body() {
             <textarea
               className="w-full p-2 border border-gray-300 rounded resize-none focus:outline-none focus:ring focus:ring-blue-100 text-base"
               rows={3}
+              onChange={(e) => setContent(e.target.value)}
               placeholder="What's on your mind?"
               maxLength={2000}
             ></textarea>
             <div className="flex items-center justify-between mt-3">
               <label className="cursor-pointer inline-flex items-center gap-1 text-blue-600 hover:underline text-base">
-                <input type="file" className="hidden" />
+                <input type="file" className="hidden" onChange={handleFileChange} />
                 📷 Add Photo
               </label>
               <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-base">
@@ -97,6 +168,7 @@ function Body() {
             </div>
           </div>
         </div>
+        </form>
       )}
     </main>
   );
