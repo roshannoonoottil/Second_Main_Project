@@ -3,6 +3,8 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import './body.css'
 
+const backendUrl = 'http://localhost:3000'
+
 function Body() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState([]);
@@ -97,7 +99,11 @@ function Body() {
                 <div key={index} className="bg-white/80 rounded p-3 shadow-sm text-base">
                   <div className="flex items-center gap-2 mb-1">
                     <img
-                      src={post.userId.userImage || "https://via.placeholder.com/40"} // fallback image
+                      src={
+                          post.userId?.image
+                            ? `${backendUrl}/${post.userId.image}`
+                            : "https://via.placeholder.com/40"
+                          }
                       alt="User"
                       className="w-8 h-8 rounded-full"
                     />
@@ -107,11 +113,11 @@ function Body() {
                     </div>
                   </div>
                   <p className="text-gray-700 mb-2">{post.content}</p>
-                  {post.imageUrl && (
+                  {post.image && (
                     <img
-                      src={post.imageUrl}
+                      src={post.image}
                       alt="Post"
-                      className="w-full object-cover rounded-md"
+                      className="w-full max-w-md mx-auto object-contain rounded-md"
                     />
                   )}
                 </div>

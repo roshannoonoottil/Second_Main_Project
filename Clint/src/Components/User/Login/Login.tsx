@@ -6,6 +6,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import GoogleAuth from "../GoogleAuth/GoogleAuth";
 import { login } from "../../../Redux/authSlice";
+import Header from "../Home/Header/Header";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -93,7 +94,9 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="rounded-md p-5 w-[320px] bg-[#f8f3e8] text-center shadow-lg border border-[#222] font-serif text-black">
+  <>
+    <Header/>
+<div className="rounded-md p-5 m-10 w-[320px] bg-[#f8f3e8] text-center shadow-lg border border-[#222] font-serif text-black">
   <h1 className="text-[22px] mb-4 underline decoration-[2px] underline-offset-4">User Login</h1>
   <form onSubmit={handleSubmit}>
     <div className="mb-2 text-left">
@@ -164,7 +167,7 @@ const Login: React.FC = () => {
   <ToastContainer autoClose={5000} pauseOnHover />
 </div>
 
-
+</>
   );
 };
 

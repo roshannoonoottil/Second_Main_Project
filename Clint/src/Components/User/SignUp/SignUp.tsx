@@ -4,6 +4,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import axios, { AxiosError } from 'axios';
 import GoogleAuth from '../GoogleAuth/GoogleAuth';
+import Header from '../Home/Header/Header';
 
 function SignUp() {
   const navigate = useNavigate();
@@ -156,6 +157,8 @@ function SignUp() {
   };
 
   return (
+    <>
+    <Header/>
 <div className="bg-[#f9f6ee] rounded-md p-6 w-[300px] text-left shadow-lg text-black border border-[#d8d1c3] font-serif"
      style={{ backgroundImage: "url('/paper-texture.png')", backgroundSize: "cover", backgroundBlendMode: "multiply" }}>
   <h1 className="text-xl mb-4 font-bold underline decoration-2 decoration-black text-center">Sign Up</h1>
@@ -271,7 +274,7 @@ function SignUp() {
     pauseOnHover
   />
 </div>
-
+ </>
 );
 
 }

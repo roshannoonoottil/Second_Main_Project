@@ -14,12 +14,18 @@ const AdminLayout = lazy(() => import('./Components/Admin/AdminLayout'));
 
 function App() {
  return (
-  <div className="relative h-screen w-screen m-0 p-0 bg-[url('/bg-img.png')] bg-cover bg-center font-newspaper text-[17px] leading-relaxed text-gray-800">
+  <div className="relative min-h-screen w-full m-0 p-0 
+    bg-[url('/bg-img.png')] bg-cover bg-center 
+    font-newspaper text-[17px] leading-relaxed text-gray-800">
     {/* Shadow Overlay */}
-    <div className="absolute inset-0 bg-black/70 z-10" />
+    <div 
+    className="absolute inset-0 bg-black/70 z-10"
+     />
 
     {/* App Content on top of shadow */}
-    <div className="relative z-20 flex justify-center items-center h-full w-full">
+    <div 
+    className="relative z-20 flex justify-center items-center"
+    >
       <Router>
         <Suspense fallback={<div className="text-white">Loading...</div>}>
           <Routes>
