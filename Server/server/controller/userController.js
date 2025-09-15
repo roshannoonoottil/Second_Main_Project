@@ -4,6 +4,7 @@ import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from "google-auth-library";
 import cloudinary from '../lib/cloudinary.js';
+import streamifier from "streamifier";
 
 
 
@@ -189,14 +190,26 @@ const completeProfile = async (req, res) => {
         // ✅ Prepare update data
         const updateData = { fullName, mobile, isProfileComplete:true};
 
-        // ✅ Add image if uploaded
-        if (req.file) {
-            const uploadResponse = await cloudinary.uploader.upload(req.file.path, {
-                folder: "profiles",
-                resource_type: "auto",
-            });
-            updateData.image = uploadResponse.secure_url;
-        }
+       // ✅ Upload to Cloudinary from buffer
+    if (req.file) {
+      const uploadStream = () =>
+        new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            {
+              folder: "profiles",
+              resource_type: "auto", // handles both images & videos
+            },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          );
+          streamifier.createReadStream(req.file.buffer).pipe(stream);
+        });
+
+      const uploadResponse = await uploadStream();
+      updateData.image = uploadResponse.secure_url;
+    }
 
         // ✅ Find and update user
         const updatedUser = await userModel.findOneAndUpdate(

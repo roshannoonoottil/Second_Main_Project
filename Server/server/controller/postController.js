@@ -1,6 +1,7 @@
 
 import cloudinary from '../lib/cloudinary.js';
 import Post from "../model/userPost.js";
+import streamifier from "streamifier";
 
 
 export const createPost = async (req, res) => {
@@ -16,12 +17,20 @@ export const createPost = async (req, res) => {
 
     // If image exists, upload to Cloudinary
     if (req.file) {
-  const uploadResponse = await cloudinary.uploader.upload(req.file.path, {
-    folder: 'posts',
-    resource_type: 'auto', // handles both image/video
-  });
-  imageUrl = uploadResponse.secure_url;
-  }
+  // Convert buffer to stream and upload
+      const uploadResult = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "posts", resource_type: "auto" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
+
+      imageUrl = uploadResult.secure_url;
+    }
 
 
     const newPost = new Post({
