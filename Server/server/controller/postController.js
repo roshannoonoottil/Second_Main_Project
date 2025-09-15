@@ -20,7 +20,15 @@ export const createPost = async (req, res) => {
   // Convert buffer to stream and upload
       const uploadResult = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-          { folder: "posts", resource_type: "auto" },
+              {
+          folder: "posts",
+          resource_type: "auto",
+          transformation: [
+            { width: 1200, height: 1200, crop: "limit" }, // shrink if bigger, keep ratio
+            { quality: "auto" },                          // auto-optimize quality
+            { fetch_format: "auto" }                      // use WebP/AVIF for smaller size
+          ],
+        },
           (error, result) => {
             if (error) reject(error);
             else resolve(result);

@@ -7,6 +7,14 @@ const FILE_TYPE_MAP = {
   "image/jpg": "jpg",
   "image/avif": "avif",
   "image/webp": "webp",
+
+  
+  // Videos
+  "video/mp4": "mp4",
+  "video/webm": "webm",
+  "video/ogg": "ogv",   // sometimes .ogv for video/ogg
+  "video/mpeg": "mpeg",
+  "video/quicktime": "mov", // for .mov files (iPhone recordings)
 };
 
 // File filter

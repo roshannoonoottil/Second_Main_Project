@@ -3,11 +3,27 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import './body.css'
 
-const backendUrl = 'http://localhost:3000'
+// const backendUrl = 'http://localhost:3000'
+
+// ✅ Define Post + User types
+interface User {
+  _id: string;
+  fullName: string;
+  image?: string;
+}
+
+interface Post {
+  _id: string;
+  userId: User;
+  content: string;
+  image?: string;   // can be image or video
+  createdAt: string;
+}
 
 function Body() {
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]); // ✅ Typed state
    const [content, setContent] = useState<string>('');
   const [image, setImage] = useState<File | null>(null);
 
@@ -114,11 +130,22 @@ function Body() {
                   </div>
                   <p className="text-gray-700 mb-2">{post.content}</p>
                   {post.image && (
+  <>
+                  {post.image.endsWith(".mp4") || post.image.endsWith(".webm") || post.image.endsWith(".ogg") ? (
+                    <video
+                      src={post.image}
+                      controls
+                      muted
+                      className="w-full max-w-md mx-auto object-contain rounded-md"
+                    />
+                  ) : (
                     <img
                       src={post.image}
                       alt="Post"
                       className="w-full max-w-md mx-auto object-contain rounded-md"
                     />
+                  )}
+                </>
                   )}
                 </div>
               ))
