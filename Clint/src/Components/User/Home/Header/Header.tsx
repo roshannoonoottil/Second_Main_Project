@@ -42,6 +42,7 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
 
         {/* Desktop Logout */}
         <div className="hidden md:flex items-center gap-5">
+          
           <button
             onClick={handleLogout}
             className="bg-[#f5f5dc] text-[#4b3621] border border-[#4b3621] px-4 py-2 rounded-sm hover:bg-[#e6e6d4] transition duration-300 shadow-inner font-serif"

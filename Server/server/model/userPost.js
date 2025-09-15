@@ -19,6 +19,10 @@ const postSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  softdelete:{
+    type:Boolean,
+    default:false
+  },
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   comments: [{ 
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

@@ -18,6 +18,7 @@ interface Post {
   content: string;
   image?: string;   // can be image or video
   createdAt: string;
+  menuOpen?: boolean;
 }
 
 function Body() {
@@ -35,7 +36,8 @@ function Body() {
         console.log('user data =>',data);
         
         if (data.success) {
-          setPosts(data.posts);
+          // ✅ Initialize menuOpen as false for each post
+          setPosts(data.posts.map((p: Post) => ({ ...p, menuOpen: false })));
         } else {
           console.error('Failed to fetch posts');
         }
@@ -81,6 +83,28 @@ function Body() {
       }
     };
 
+
+    const handleDeletePost = async (postId: string) => {
+  try {
+    const token = localStorage.getItem("token");
+    console.log('token',token);
+    
+    await axios.put(`http://localhost:3000/post/deletepost/${postId}`,{}, {
+      headers: {
+            Authorization: `Bearer ${token}`
+          },
+    });
+
+    // ✅ Remove post from state (UI update after soft delete)
+    setPosts((prev) => prev.filter((p) => p._id !== postId));
+
+    toast.success("Post deleted successfully");
+  } catch (err: any) {
+    toast.error(err?.response?.data?.message || "Failed to delete post");
+  }
+};
+
+
   return (
     <main className="flex-1 px-2 md:px-4 py-4 flex flex-col md:flex-row gap-3 text-base">
       {/* Left Sidebar */}
@@ -112,40 +136,82 @@ function Body() {
             {/* Sample Post */}
             {posts.length > 0 ? (
               posts.map((post, index) => (
-                <div key={index} className="bg-white/80 rounded p-3 shadow-sm text-base">
-                  <div className="flex items-center gap-2 mb-1">
-                    <img
-                      src={
-                          post.userId?.image
-                            ? post.userId.image
-                            : "/Propic_demo.webp"
-                          }
-                      alt="User"
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <div>
-                      <h3 className="font-semibold text-gray-800 text-lg">{post.userId.fullName || 'Anonymous'}</h3>
-                      <p className="text-gray-500 text-sm">{new Date(post.createdAt).toLocaleString()}</p>
+                <div key={post._id} className="bg-white/80 rounded p-3 shadow-sm text-base">
+                  {/* Post Header */}
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={post.userId?.image ? post.userId.image : "/Propic_demo.webp"}
+                        alt="User"
+                        className="w-8 h-8 rounded-full"
+                      />
+                      <div>
+                        <h3 className="font-semibold text-gray-800 text-lg">
+                          {post.userId.fullName || "Anonymous"}
+                        </h3>
+                        <p className="text-gray-500 text-sm">
+                          {new Date(post.createdAt).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* 3 Dots Dropdown */}
+                    <div className="relative">
+                      <button
+                        onClick={() =>
+                          setPosts((prev) =>
+                            prev.map((p, i) =>
+                              i === index ? { ...p, menuOpen: !p.menuOpen } : p
+                            )
+                          )
+                        }
+                        className="p-1 rounded-full hover:bg-gray-200"
+                      >
+                        ⋮
+                      </button>
+
+                      {post.menuOpen && (
+                        <div className="absolute right-0 mt-2 w-28 bg-white border rounded shadow-lg z-10">
+                          <button
+                            onClick={() => console.log("Edit post", post._id)}
+                            className="w-full text-left px-3 py-1 hover:bg-gray-100"
+                          >
+                            ✏️ Edit
+                          </button>
+                          <button
+                            onClick={() =>  handleDeletePost(post._id)}
+                            className="w-full text-left px-3 py-1 text-red-600 hover:bg-gray-100"
+                          >
+                            🗑 Delete
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
+
+                  {/* Post Content */}
                   <p className="text-gray-700 mb-2">{post.content}</p>
+
+                  {/* Post Media */}
                   {post.image && (
-  <>
-                  {post.image.endsWith(".mp4") || post.image.endsWith(".webm") || post.image.endsWith(".ogg") ? (
-                    <video
-                      src={post.image}
-                      controls
-                      muted
-                      className="w-full max-w-md mx-auto object-contain rounded-md"
-                    />
-                  ) : (
-                    <img
-                      src={post.image}
-                      alt="Post"
-                      className="w-full max-w-md mx-auto object-contain rounded-md"
-                    />
-                  )}
-                </>
+                    <>
+                      {post.image.endsWith(".mp4") ||
+                      post.image.endsWith(".webm") ||
+                      post.image.endsWith(".ogg") ? (
+                        <video
+                          src={post.image}
+                          controls
+                          muted
+                          className="w-full max-w-md mx-auto object-contain rounded-md"
+                        />
+                      ) : (
+                        <img
+                          src={post.image}
+                          alt="Post"
+                          className="w-full max-w-md mx-auto object-contain rounded-md"
+                        />
+                      )}
+                    </>
                   )}
                 </div>
               ))

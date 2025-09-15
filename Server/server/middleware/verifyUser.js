@@ -5,6 +5,8 @@ import 'dotenv/config';
 const verifyUser = (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
+        console.log('header',authHeader);
+        
         if (!authHeader) {
             return res.status(401).json({ msg: "Authorization header missing." });
         }

@@ -63,7 +63,7 @@ export const createPost = async (req, res) => {
 
 export const getAllPosts = async (req, res) => {
   try {
-    const posts = await Post.find()
+    const posts = await Post.find({ softdelete: false })
       .populate('userId', 'fullName email image') // only select fields you need
       .populate('comments.userId', 'fullName image') // populate user info in comments too
       .sort({ createdAt: -1 }); // optional: latest posts first
@@ -72,5 +72,33 @@ export const getAllPosts = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
+
+export const deletePost = async (req, res) => {
+  try {
+    const userId = req.user.userId; 
+    console.log('user id',userId);
+    
+    const postId = req.params._id;
+    console.log('postId',postId);
+
+    // Find the post
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    // Ensure the post belongs to the current user
+    if (post.userId.toString() !== userId) {
+      return res.status(403).json({ message: "Not authorized to delete this post" });
+    }
+
+    // Soft delete
+    post.softdelete = true;
+    await post.save();
+
+    res.status(200).json({ message: "Post soft deleted successfully" });
+  } catch (error) {
+    console.error("Error in deletePost:", error);
+    res.status(500).json({ success: false, message: "Server error." });
   }
 };
