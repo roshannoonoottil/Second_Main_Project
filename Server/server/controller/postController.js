@@ -6,9 +6,7 @@ import Post from "../model/userPost.js";
 export const createPost = async (req, res) => {
   try {
     const { content} = req.body;
-    const image = req.file
     const userId = req.user.userId;
-    console.log("image",req.file.path);
     
     if (!content) {
       return res.status(400).json({ success: false, message: 'Post content is required.' });
@@ -17,13 +15,13 @@ export const createPost = async (req, res) => {
     let imageUrl;
 
     // If image exists, upload to Cloudinary
-    if (image) {
-  const uploadResponse = await cloudinary.uploader.upload(image.path, {
+    if (req.file) {
+  const uploadResponse = await cloudinary.uploader.upload(req.file.path, {
     folder: 'posts',
     resource_type: 'auto', // handles both image/video
   });
   imageUrl = uploadResponse.secure_url;
-}
+  }
 
 
     const newPost = new Post({

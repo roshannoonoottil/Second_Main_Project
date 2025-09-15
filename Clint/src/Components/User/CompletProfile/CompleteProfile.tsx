@@ -50,7 +50,7 @@ const Profile: React.FC = () => {
         setUserName(userData.fullName);
         setMobile(userData.mobile);
         setEmail(userData.email);
-        setImagePreview(`http://localhost:3000${userData.image}`);
+        setImagePreview(userData.image);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -112,8 +112,10 @@ const Profile: React.FC = () => {
         console.error("Error updating profile:", error);
       }
     }
+    
   };
-
+  
+  
   const handleCancel = () =>{
           dispatch(logout())
           localStorage.removeItem('token')
@@ -184,7 +186,7 @@ const Profile: React.FC = () => {
             type="submit"
             className="flex-1 px-4 py-2 bg-cyan-500 text-white rounded-md shadow-md hover:scale-105 hover:bg-cyan-600 transition-transform"
           >
-            Continue
+            Update
           </button>
           <button
             type="button"

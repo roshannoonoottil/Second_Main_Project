@@ -101,8 +101,8 @@ function Body() {
                     <img
                       src={
                           post.userId?.image
-                            ? `${backendUrl}/${post.userId.image}`
-                            : "https://via.placeholder.com/40"
+                            ? post.userId.image
+                            : "/Propic_demo.webp"
                           }
                       alt="User"
                       className="w-8 h-8 rounded-full"

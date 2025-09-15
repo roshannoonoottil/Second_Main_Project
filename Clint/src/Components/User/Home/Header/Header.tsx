@@ -32,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
           <Link to="/home" className="flex items-center gap-2 hover:text-blue-400 transition">
             <FaHome /> Home
           </Link>
-          <Link to="/profile" className="flex items-center gap-2 hover:text-blue-400 transition">
+          <Link to="/complete-profile" className="flex items-center gap-2 hover:text-blue-400 transition">
             <FaUser /> Profile
           </Link>
           <Link to="/settings" className="flex items-center gap-2 hover:text-blue-400 transition">

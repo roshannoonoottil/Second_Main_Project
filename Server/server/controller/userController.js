@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from "google-auth-library";
+import cloudinary from '../lib/cloudinary.js';
 
 
 
@@ -190,7 +191,11 @@ const completeProfile = async (req, res) => {
 
         // ✅ Add image if uploaded
         if (req.file) {
-            updateData.image = `/images/${req.file.filename}`;
+            const uploadResponse = await cloudinary.uploader.upload(req.file.path, {
+                folder: "profiles",
+                resource_type: "auto",
+            });
+            updateData.image = uploadResponse.secure_url;
         }
 
         // ✅ Find and update user
