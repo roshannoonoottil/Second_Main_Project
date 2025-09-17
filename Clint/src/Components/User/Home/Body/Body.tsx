@@ -27,6 +27,7 @@ function Body() {
   const [posts, setPosts] = useState<Post[]>([]); // ✅ Typed state
    const [content, setContent] = useState<string>('');
   const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -77,11 +78,15 @@ function Body() {
       }
     };
   
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files && e.target.files[0]) {
-        setImage(e.target.files[0]);
-      }
-    };
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file); // ✅ store file for upload
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+    }
+  };
+    
 
 
     const handleDeletePost = async (postId: string) => {
@@ -257,14 +262,32 @@ function Body() {
               maxLength={2000}
             ></textarea>
             <div className="flex items-center justify-between mt-3">
-              <label className="cursor-pointer inline-flex items-center gap-1 text-blue-600 hover:underline text-base">
-                <input type="file" className="hidden" onChange={handleFileChange} />
-                📷 Add Photo
-              </label>
-              <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-base">
-                Post
-              </button>
-            </div>
+            {/* Clickable Image Upload */}
+            <label htmlFor="file-upload" className="cursor-pointer">
+              <div className="w-20 h-20 border-2 border-white shadow-md rounded-lg overflow-hidden">
+                <img
+                  src={imagePreview || "/media_placeholder_pic.webp"} // default demo pic
+                  alt="Upload Preview"
+                  className="w-full h-full object-cover"
+                  onError={(e) => (e.currentTarget.src = "/Propic_demo.webp")}
+                />
+              </div>
+            </label>
+
+            {/* Hidden File Input */}
+            <input
+              id="file-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+
+            {/* Post Button */}
+            <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-base">
+              Post
+            </button>
+          </div>
           </div>
         </div>
         </form>

@@ -102,3 +102,65 @@ export const deletePost = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error." });
   }
 };
+
+export const updatePost = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const postId = req.params._id;
+
+    // Find the post
+    let post = await Post.findById(postId);
+    console.log('post = >', post);
+    
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    // Check if the logged-in user is the owner
+    if (post.userId.toString() !== userId) {
+      return res.status(403).json({ message: "Not authorized to update this post" });
+    }
+    console.log('newpost content =>',req.body.content);
+    // Update content if provided
+    if (req.body.content) {
+      post.content = req.body.content;
+      post.isEdited = true;
+    }
+
+    // Update image if new file is uploaded
+    if (req.file) {
+      const uploadResult = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: "posts",
+            resource_type: "auto",
+            transformation: [
+              { width: 1200, height: 1200, crop: "limit" },
+              { quality: "auto" },
+              { fetch_format: "auto" }
+            ],
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
+
+      post.image = uploadResult.secure_url;
+      post.isEdited = true;
+    }
+
+    // Save updated post
+    await post.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Post updated successfully",
+      post,
+    });
+
+  } catch (error) {
+    console.error("Error in updatePost:", error);
+    res.status(500).json({ success: false, message: "Server error." });
+  }
+};
