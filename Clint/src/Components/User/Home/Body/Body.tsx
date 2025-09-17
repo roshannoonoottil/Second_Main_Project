@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import './body.css'
@@ -16,7 +16,7 @@ interface Post {
   _id: string;
   userId: User;
   content: string;
-  image?: string;   // can be image or video
+  image?: string | null;   // can be image or video
   createdAt: string;
   menuOpen?: boolean;
 }
@@ -28,6 +28,9 @@ function Body() {
    const [content, setContent] = useState<string>('');
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
+
+
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -109,6 +112,45 @@ function Body() {
   }
 };
 
+const handleUpdatePost = async (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  if (!editingPost) return;
+
+  const formData = new FormData();
+  formData.append("content", content);
+  if (image) formData.append("image", image);
+
+  try {
+    const token = localStorage.getItem("token");
+    const res = await axios.post(
+      `http://localhost:3000/post/updatepost/${editingPost._id}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    toast.success(res.data.message || "Post updated!");
+    setPosts((prev) =>
+      prev.map((p) =>
+        p._id === editingPost._id ? { ...p, content, image: imagePreview } : p
+      )
+    );
+    setIsModalOpen(false);
+    setEditingPost(null);
+    setContent("");
+    setImage(null);
+    setImagePreview(null);
+  } catch (err: any) {
+    toast.error(err?.response?.data?.message || "Failed to update post");
+  }
+};
+
+
+
 
   return (
     <main className="flex-1 px-2 md:px-4 py-4 flex flex-col md:flex-row gap-3 text-base">
@@ -130,12 +172,14 @@ function Body() {
 
           {/* Create Post Button */}
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setEditingPost(null); // reset → means create mode
+              setIsModalOpen(true);
+            }}
             className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-base mb-4"
           >
             + Create Post
           </button>
-
           {/* Scrollable Post Feed */}
           <div className="space-y-3 max-h-[700px] overflow-y-auto pr-2 scrollbar-hide">
             {/* Sample Post */}
@@ -178,11 +222,16 @@ function Body() {
                       {post.menuOpen && (
                         <div className="absolute right-0 mt-2 w-28 bg-white border rounded shadow-lg z-10">
                           <button
-                            onClick={() => console.log("Edit post", post._id)}
-                            className="w-full text-left px-3 py-1 hover:bg-gray-100"
-                          >
-                            ✏️ Edit
-                          </button>
+                          onClick={() => {
+                            setEditingPost(post); // pass post to edit
+                            setContent(post.content); // prefill textarea
+                            setImagePreview(post.image || null); // prefill image
+                            setIsModalOpen(true);
+                          }}
+                          className="w-full text-left px-3 py-1 hover:bg-gray-100"
+                        >
+                          ✏️ Edit
+                        </button>
                           <button
                             onClick={() =>  handleDeletePost(post._id)}
                             className="w-full text-left px-3 py-1 text-red-600 hover:bg-gray-100"
@@ -241,57 +290,57 @@ function Body() {
 
       {/* Create Post Modal */}
       {isModalOpen && (
-        <form 
-        onSubmit={handleSubmit}
-        >
-          
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white w-[90%] max-w-md p-4 rounded shadow-lg text-base relative">
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-2 right-2 text-gray-500 hover:text-black text-lg"
-            >
-              ✖
-            </button>
-            <h3 className="text-lg font-semibold mb-2 text-gray-800">Create Post</h3>
-            <textarea
-              className="w-full p-2 border border-gray-300 rounded resize-none focus:outline-none focus:ring focus:ring-blue-100 text-base"
-              rows={3}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="What's on your mind?"
-              maxLength={2000}
-            ></textarea>
-            <div className="flex items-center justify-between mt-3">
-            {/* Clickable Image Upload */}
-            <label htmlFor="file-upload" className="cursor-pointer">
-              <div className="w-20 h-20 border-2 border-white shadow-md rounded-lg overflow-hidden">
-                <img
-                  src={imagePreview || "/media_placeholder_pic.webp"} // default demo pic
-                  alt="Upload Preview"
-                  className="w-full h-full object-cover"
-                  onError={(e) => (e.currentTarget.src = "/Propic_demo.webp")}
-                />
+            <form onSubmit={editingPost ? handleUpdatePost : handleSubmit}>
+              <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                <div className="bg-white w-[90%] max-w-md p-4 rounded shadow-lg text-base relative">
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="absolute top-2 right-2 text-gray-500 hover:text-black text-lg"
+                  >
+                    ✖
+                  </button>
+                  <h3 className="text-lg font-semibold mb-2 text-gray-800">
+                    {editingPost ? "Edit Post" : "Create Post"}
+                  </h3>
+
+                  <textarea
+                    className="w-full p-2 border border-gray-300 rounded resize-none focus:outline-none focus:ring focus:ring-blue-100 text-base"
+                    rows={3}
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="What's on your mind?"
+                    maxLength={2000}
+                  />
+
+                  <div className="flex items-center justify-between mt-3">
+                    {/* Clickable Image Upload */}
+                    <label htmlFor="file-upload" className="cursor-pointer">
+                      <div className="w-20 h-20 border-2 border-white shadow-md rounded-lg overflow-hidden">
+                        <img
+                          src={imagePreview || "/media_placeholder_pic.webp"}
+                          alt="Upload Preview"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </label>
+                    <input
+                      id="file-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+
+                    {/* Save / Post Button */}
+                    <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-base">
+                      {editingPost ? "Save" : "Post"}
+                    </button>
+                  </div>
+                </div>
               </div>
-            </label>
+            </form>
+          )}
 
-            {/* Hidden File Input */}
-            <input
-              id="file-upload"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-            />
-
-            {/* Post Button */}
-            <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-base">
-              Post
-            </button>
-          </div>
-          </div>
-        </div>
-        </form>
-      )}
     </main>
   );
 }
