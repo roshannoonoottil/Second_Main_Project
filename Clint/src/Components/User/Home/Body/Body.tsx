@@ -34,7 +34,7 @@ function Body() {
 
 const { user, isAuthenticated, isAdmin } = useSelector((state: RootState) => state.auth);
 
-console.log('user data', user);
+// console.log('user data', user);
 
 
 
