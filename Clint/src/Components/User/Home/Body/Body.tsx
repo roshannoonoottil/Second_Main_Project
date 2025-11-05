@@ -2,6 +2,8 @@ import { FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import './body.css'
+import { RootState } from '../../../../Redux/store'; // adjust the path as needed
+import { useSelector } from 'react-redux';
 
 // const backendUrl = 'http://localhost:3000'
 
@@ -25,10 +27,14 @@ function Body() {
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]); // ✅ Typed state
-   const [content, setContent] = useState<string>('');
+  const [content, setContent] = useState<string>('');
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState<Post | null>(null);
+
+const { user, isAuthenticated, isAdmin } = useSelector((state: RootState) => state.auth);
+
+console.log('user data', user);
 
 
 
@@ -204,43 +210,48 @@ const handleUpdatePost = async (e: FormEvent<HTMLFormElement>) => {
                       </div>
                     </div>
 
-                    {/* 3 Dots Dropdown */}
-                    <div className="relative">
-                      <button
-                        onClick={() =>
-                          setPosts((prev) =>
-                            prev.map((p, i) =>
-                              i === index ? { ...p, menuOpen: !p.menuOpen } : p
-                            )
-                          )
-                        }
-                        className="p-1 rounded-full hover:bg-gray-200"
-                      >
-                        ⋮
-                      </button>
+                  {/* 3 Dots Dropdown – visible only for post owner */}
+                  {/* 3 Dots Dropdown - Only for Post Owner or Admin */}
+{isAuthenticated && (post.userId?._id === user.userId || isAdmin) && (
+  <div className="relative">
+    <button
+      onClick={() =>
+        setPosts((prev) =>
+          prev.map((p, i) =>
+            i === index ? { ...p, menuOpen: !p.menuOpen } : p
+          )
+        )
+      }
+      className="p-1 rounded-full hover:bg-gray-200"
+    >
+      <span className="text-3xl cursor-pointer">⋮</span>
+    </button>
 
-                      {post.menuOpen && (
-                        <div className="absolute right-0 mt-2 w-28 bg-white border rounded shadow-lg z-10">
-                          <button
-                          onClick={() => {
-                            setEditingPost(post); // pass post to edit
-                            setContent(post.content); // prefill textarea
-                            setImagePreview(post.image || null); // prefill image
-                            setIsModalOpen(true);
-                          }}
-                          className="w-full text-left px-3 py-1 hover:bg-gray-100"
-                        >
-                          ✏️ Edit
-                        </button>
-                          <button
-                            onClick={() =>  handleDeletePost(post._id)}
-                            className="w-full text-left px-3 py-1 text-red-600 hover:bg-gray-100"
-                          >
-                            🗑 Delete
-                          </button>
-                        </div>
-                      )}
-                    </div>
+    {post.menuOpen && (
+      <div className="absolute right-0 mt-2 w-28 bg-white border rounded shadow-lg z-10">
+        <button
+          onClick={() => {
+            setEditingPost(post);
+            setContent(post.content);
+            setImagePreview(post.image || null);
+            setIsModalOpen(true);
+          }}
+          className="w-full text-left px-3 py-1 hover:bg-gray-100"
+        >
+          ✏️ Edit
+        </button>
+
+        <button
+          onClick={() => handleDeletePost(post._id)}
+          className="w-full text-left px-3 py-1 text-red-600 hover:bg-gray-100"
+        >
+          🗑 Delete
+        </button>
+      </div>
+    )}
+  </div>
+)}
+
                   </div>
 
                   {/* Post Content */}

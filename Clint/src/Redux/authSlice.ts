@@ -6,6 +6,7 @@ interface User {
     image: string;
     mobile: string;
     userName: string;
+    userId?: string; 
     _id: string;
 }
 
