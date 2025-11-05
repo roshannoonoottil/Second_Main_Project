@@ -5,11 +5,13 @@ const SignUp = lazy(() => import('./Components/User/SignUp/SignUp'));
 const Login = lazy(() => import('./Components/User/Login/Login'));
 const AdminLogin = lazy(() => import('./Components/Admin/Login/Adminlogin'));
 const Home = lazy(() => import('./Components/User/Home/Home'));
-const Dashboard = lazy(() => import('./Components/Admin/Dashboard/Dashboard'));
 const CompleteProfile = lazy(() => import('./Components/User/CompleteProfile/CompleteProfile'));
 // const CreatePost = lazy(() => import('./Components/User/Post/CreatePost'));
 const AdminLayout = lazy(() => import('./Components/Admin/AdminLayout'));
-
+import AdminPrivateRoutes from './AppRoutes/Routes/AdminPrivateRoutes';
+import AdminPublicRoutes from './AppRoutes/Routes/AdminPublicRoutes';
+import UserPrivateRoutes from './AppRoutes/Routes/UserPrivateRoutes';
+import UserPublicRoutes from './AppRoutes/Routes/UserPublicRoutes';
 
 function App() {
  return (
@@ -30,16 +32,28 @@ function App() {
       <Router>
         <Suspense fallback={<div className="text-white">Loading...</div>}>
           <Routes>
-            <Route path='/' element={<Login />} />
-            <Route path='/signup' element={<SignUp />} />
-            <Route path='/home' element={<Home />} />
-            <Route path='/complete-profile' element={<CompleteProfile />} />
-            <Route path='/admin' element={<AdminLogin />} />
-            {/* <Route path='/create' element={<CreatePost />} /> */}
+            {/* Admin Private Routes */}
+            <Route element={<AdminPrivateRoutes/>}>
+              <Route path="/dashboard" element={<AdminLayout />}/>
+            </Route>
 
-            {/* Admin Protected Routes */}
-            <Route path="/dashboard" element={<AdminLayout />}>
-              <Route index element={<Dashboard />} />
+
+            {/* Admin Public Routes */}
+            <Route element={<AdminPublicRoutes/>}>
+              <Route path='/admin' element={<AdminLogin />} />
+            </Route >
+
+            {/* User Private Routes */}
+            <Route element={<UserPrivateRoutes/>}>
+              <Route path='/home' element={<Home />} />
+              <Route path='/complete-profile' element={<CompleteProfile />} />
+               {/* <Route path='/create' element={<CreatePost />} /> */}
+            </Route >
+
+            {/* User Public Routes */}
+            <Route element={<UserPublicRoutes/>}>
+              <Route path='/' element={<Login />} />
+              <Route path='/signup' element={<SignUp />} />
             </Route>
           </Routes>
         </Suspense>

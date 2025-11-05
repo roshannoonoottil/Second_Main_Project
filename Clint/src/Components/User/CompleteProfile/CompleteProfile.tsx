@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { logout } from "../../../Redux/authSlice";
 
 interface User {
@@ -27,24 +27,21 @@ const Profile: React.FC = () => {
 
   const token = localStorage.getItem('token');
   if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
 
-  
+
 
   useEffect(() => {
-    if(!token){
-      navigate('/')
-    }
     const fetchUserData = async () => {
       try {
         const response = await axios.get("http://localhost:3000/user/home");
-        
+
         const userData: User = response.data.data;
         console.log('user data :', userData);
         console.log('image path', userData.image);
-        
-        
+
+
 
         setUser(userData);
         setUserName(userData.fullName);
@@ -112,21 +109,21 @@ const Profile: React.FC = () => {
         console.error("Error updating profile:", error);
       }
     }
-    
+
   };
-  
-  
-  const handleCancel = () =>{
-          dispatch(logout())
-          localStorage.removeItem('token')
-          navigate("/home");
-  } 
+
+
+  const handleCancel = () => {
+    dispatch(logout())
+    localStorage.removeItem('token')
+    navigate("/home");
+  }
 
   return (
     <div className="max-w-lg mx-auto mt-12 p-6 bg-gray-900/90 backdrop-blur-lg shadow-xl rounded-lg text-white">
       <h2 className="text-xl font-semibold text-center mb-4">Complete Profile</h2>
       <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-        
+
         {/* Full Name */}
         <input
           type="text"

@@ -19,20 +19,20 @@ const Login: React.FC = () => {
   const [passwordError, setPasswordError] = useState("");
 
   // 🔹 Redirect if user is already logged in
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/home"); 
-    }
-  }, [navigate]);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     navigate("/home"); 
+  //   }
+  // }, [navigate]);
 
   // 🔹 Set Axios Authorization Header
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    }
-  }, []);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  //   }
+  // }, []);
 
   const register = (): void => {
     navigate("/signup");

@@ -19,13 +19,6 @@ const AdminLogin: React.FC = () => {
   useEffect(() => {
     const token = localStorage.getItem("admintoken");
     if (token) {
-      navigate("/dashboard"); // ✅ Redirect if already logged in
-    }
-  }, [navigate]);
-
-  useEffect(() => {
-    const token = localStorage.getItem("admintoken");
-    if (token) {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
   }, []);
